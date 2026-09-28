@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#2f5d27">
+<title>Metode | Lahan Terdampak</title>
+<meta name="description" content="Metode penelitian: CRISP-DM, Mask R-CNN, enam layer fitur perubahan, Random Forest, dan evaluasi end-to-end.">
+<link rel="icon" href="assets/img/logo-stis.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700;1,800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body data-page="metode">
+<main>
+<section class="hero page">
+  <div class="wrap">
+    <div class="rv">
+      <div class="eyebrow">Metode penelitian</div>
+      <h1>Tiga tujuan, satu alur kerja CRISP-DM</h1>
+      <p class="lead">Setiap tujuan membandingkan dua model pada data dan protokol yang sama. Model terbaik digabungkan menjadi <em>pipeline end-to-end</em> dan diwujudkan sebagai aplikasi web.</p>
+    </div>
+  </div>
+</section>
+
+<section class="alt">
+  <div class="wrap split">
+    <div class="stick rv">
+      <h2>Enam fase CRISP-DM</h2>
+      <p class="muted">Kerangka kerja yang memandu penelitian dari perumusan kebutuhan sampai aplikasi yang dapat dipakai.</p>
+    </div>
+    <div class="phases">
+      <div class="rv"><h3><i class="ph ph-target" aria-hidden="true"></i>Business Understanding</h3><p>Wilayah studi Palu 2018, kebutuhan informasi kerusakan per petak, dan kriteria keberhasilan yang bersifat komparatif.</p></div>
+      <div class="rv"><h3><i class="ph ph-magnifying-glass" aria-hidden="true"></i>Data Understanding</h3><p>Subset palu-tsunami xBD: 190 pasang tile dari tiga sensor, dengan citra sebelum bencana dari 2016-2018.</p></div>
+      <div class="rv"><h3><i class="ph ph-pencil-ruler" aria-hidden="true"></i>Data Preparation</h3><p>Georeferensi ulang ke UTM 51S, seleksi 18 tile, digitasi 3.271 petak, pelabelan, dan konstruksi enam fitur perubahan.</p></div>
+      <div class="rv"><h3><i class="ph ph-cpu" aria-hidden="true"></i>Modeling</h3><p>YOLOv8-seg vs Mask R-CNN (Tujuan 1), Random Forest vs LightGBM (Tujuan 2), dan integrasi <em>end-to-end</em> (Tujuan 3).</p></div>
+      <div class="rv"><h3><i class="ph ph-chart-bar" aria-hidden="true"></i>Evaluation</h3><p>Metrik piksel dan instans, F1-<em>macro</em>, Kappa berbobot kuadratik, Skor gabungan xView2, mIoU, dan skenario <em>oracle</em>.</p></div>
+      <div class="rv"><h3><i class="ph ph-globe-simple" aria-hidden="true"></i>Deployment</h3><p>Aplikasi web Gradio di Hugging Face Spaces yang divalidasi terhadap hasil resmi.</p></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="head rv"><h2>Tiga kelas berdasarkan keluasan kerusakan</h2>
+      <p class="muted">Penilai mengestimasi proporsi luas petak d(P) yang menunjukkan indikasi kerusakan fisik, seperti tertimbun sedimen, retak, tergenang, atau hilangnya pematang. Kehilangan tanaman tidak dipakai sebagai penentu karena bisa berasal dari panen atau masa bera.</p></div>
+    <div class="rv" aria-hidden="true">
+      <div class="scale"><div class="bar none"></div><div class="bar mid"></div><div class="bar sev"></div></div>
+      <div class="scale-lbl"><span>0%</span><span>&gt; 0% sampai 50%</span><span>&gt; 50% sampai 100%</span></div>
+    </div>
+    <div class="classes">
+      <div class="rv"><h3><span class="dot none"></span>Tidak Terdampak</h3><span class="mono">d(P) = 0%</span><p>Tidak ada indikasi kerusakan sama sekali.</p></div>
+      <div class="rv"><h3><span class="dot mid"></span>Terdampak Sedang</h3><span class="mono">0% &lt; d(P) ≤ 50%</span><p>Indikasi kerusakan pada sebagian petak; gabungan tingkat ringan dan sedang.</p></div>
+      <div class="rv"><h3><span class="dot sev"></span>Terdampak Berat</h3><span class="mono">d(P) &gt; 50%</span><p>Indikasi kerusakan pada sebagian besar luas petak.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="alt">
+  <div class="wrap">
+    <div class="head rv"><h2>Enam <em>layer</em> perubahan citra</h2>
+      <p class="muted">Setiap <em>layer</em> menghasilkan persentase luas petak yang berubah (0 sampai 100). Keenam nilai kontinu menjadi masukan Random Forest; versi ordinalnya hanya dipakai untuk pelaporan.</p></div>
+    <div class="layers">
+      <div class="layer rv"><div class="ic">1</div><div><h3>Batas lahan</h3><div class="tech">Deteksi tepi Canny pada cincin batas petak</div><p>Proporsi tepi pematang sebelum bencana yang hilang sesudah bencana.</p></div></div>
+      <div class="layer rv"><div class="ic">2</div><div><h3>Material asing</h3><div class="tech">CVA + Otsu + filter warna HSV</div><p>Piksel yang berubah dan berwarna khas lumpur atau material keabuan.</p></div></div>
+      <div class="layer rv"><div class="ic">3</div><div><h3>Kehilangan tanaman</h3><div class="tech">Excess Green Index (ExG)</div><p>Penurunan neto luas vegetasi terhadap kondisi sebelum bencana.</p></div></div>
+      <div class="layer rv"><div class="ic">4</div><div><h3>Perubahan radiometri</h3><div class="tech">Change Vector Analysis + ambang Otsu</div><p>Intensitas perubahan spektral umum, jaring pengaman bagi bentuk kerusakan lain.</p></div></div>
+      <div class="layer rv"><div class="ic">5</div><div><h3>Genangan baru</h3><div class="tech">Indeks air kanal biru dan merah</div><p>Piksel berair sesudah bencana yang sebelumnya bukan air.</p></div></div>
+      <div class="layer rv"><div class="ic">6</div><div><h3>Perubahan semantik (SAC)</h3><div class="tech">AnyChange berbasis Segment Anything Model</div><p>Perubahan umum secara <em>zero-shot</em>, disepakati minimal dua <em>mask</em>.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap grid g2" style="gap:56px;align-items:start">
+    <div class="rv">
+      <h2>Tile utuh sebagai blok spasial</h2>
+      <p class="muted">Empat tile disisihkan utuh sebagai data uji, sehingga model selalu dinilai pada lokasi yang tidak pernah dilihatnya. Empat belas tile sisanya dibagi ke 4 <em>fold</em> dengan algoritme Longest Processing Time agar jumlah poligon per <em>fold</em> seimbang.</p>
+      <div class="callout small">Pilihan ini membuat komposisi kelas dan ukuran petak di data uji berbeda dari data latih (<em>label shift</em> dan pergeseran kovariat pada peubah ukuran objek). Angka kinerja menjadi pendugaan yang jujur untuk lokasi baru, bukan angka optimistis dari pembagian acak.</div>
+    </div>
+    <div class="rv">
+      <h2>Metrik untuk tiap tahap</h2>
+      <div class="table-wrap"><table class="data">
+        <thead><tr><th>Tahap</th><th>Metrik utama</th></tr></thead>
+        <tbody>
+          <tr><td>Tujuan 1: pembentukan poligon</td><td class="l"><em>Precision</em>, <em>recall</em>, F1, dan IoU tingkat piksel dan instans (pencocokan Hungarian, IoU ≥ 0,5)</td></tr>
+          <tr><td>Tujuan 2: klasifikasi</td><td class="l">F1-<em>macro</em> dan Cohen's Kappa berbobot kuadratik</td></tr>
+          <tr><td>Tujuan 3: <em>end-to-end</em></td><td class="l">F1_lokalisasi, F1 per kelas (<em>matched-only</em>), Skor gabungan xView2, dan mIoU</td></tr>
+          <tr><td>Aplikasi web</td><td class="l">Kesetaraan poligon, fitur, dan kelas terhadap hasil resmi</td></tr>
+        </tbody></table></div>
+    </div>
+  </div>
+</section>
+</main>
+<script src="assets/js/config.js"></script>
+<script src="assets/data/data.js"></script>
+<script src="assets/js/main.js"></script>
+</body>
+</html>

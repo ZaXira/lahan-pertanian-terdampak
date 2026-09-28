@@ -1,0 +1,26 @@
+# Rahasia & konfigurasi lokal (JANGAN di-commit)
+.env
+.env.*
+**/.vercel/
+
+# Dependensi & cache
+node_modules/
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.gradio/
+
+# Data & model besar (di-host di Hugging Face)
+dataset/tif/
+*.tif
+*.tiff
+*.pth
+*.joblib
+*.zip
+
+# Editor / OS
+.vscode/
+.idea/
+Thumbs.db
+.DS_Store

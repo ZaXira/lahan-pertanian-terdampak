@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#2f5d27">
+<title>Coba Citra Sendiri | Lahan Terdampak</title>
+<meta name="description" content="Unggah pasangan citra satelit sebelum dan sesudah bencana untuk menilai kerusakan lahan pertanian dengan model penelitian.">
+<link rel="icon" href="assets/img/logo-stis.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700;1,800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body data-page="unggah">
+<main>
+<section class="hero page">
+  <div class="wrap">
+    <div class="rv">
+      <div class="eyebrow">Demo langsung dengan GPU di Hugging Face</div>
+      <h1>Nilai kerusakan dari citra Anda sendiri</h1>
+      <p class="lead">Unggah citra sebelum dan sesudah bencana pada lokasi yang sama. Model penelitian berjalan di Hugging Face Spaces (ZeroGPU).</p>
+    </div>
+  </div>
+</section>
+
+<section style="padding-top:12px">
+  <div class="wrap">
+    <div class="samples rv"><span>Tidak punya citra? Pakai contoh:</span><span id="contoh" class="btn-row" style="margin:0"></span></div>
+
+    <div class="grid g2">
+      <div class="field"><label for="fPre">Citra sebelum bencana (pre)</label>
+        <div class="drop" id="dPre"><input id="fPre" type="file" accept=".tif,.tiff,.png,.jpg,.jpeg" aria-describedby="bantuanCitra"><div class="drop-ph"><i class="ph ph-upload-simple" aria-hidden="true"></i><b>Pilih atau seret berkas</b>GeoTIFF, PNG, atau JPG</div></div></div>
+      <div class="field"><label for="fPost">Citra sesudah bencana (post)</label>
+        <div class="drop" id="dPost"><input id="fPost" type="file" accept=".tif,.tiff,.png,.jpg,.jpeg" aria-describedby="bantuanCitra"><div class="drop-ph"><i class="ph ph-upload-simple" aria-hidden="true"></i><b>Pilih atau seret berkas</b>GeoTIFF, PNG, atau JPG</div></div></div>
+    </div>
+    <p class="small muted" id="bantuanCitra" style="margin:12px 0 0;max-width:80ch">Kedua citra harus sejajar piksel ke piksel, sisi maksimum 2048 piksel. GeoTIFF asli memberi hasil identik dengan penelitian. Untuk JPG/PNG, konversi ketiga kanal dengan <em>satu</em> skala min-max yang sama; peregangan per kanal membuat lebih dari separuh lahan tidak terdeteksi.</p>
+
+    <div style="display:flex;flex-wrap:wrap;gap:16px 20px;align-items:end;margin:28px 0 24px">
+      <div class="field"><label for="res">Resolusi citra (meter/piksel)</label>
+        <input id="res" type="number" min="0.01" step="0.0001" value="0.4984" aria-describedby="catatanProses"></div>
+      <button class="btn" id="proses" disabled><i class="ph ph-play" aria-hidden="true"></i>Proses citra</button>
+      <span class="small muted" id="catatanProses">Satu pasang citra 1024×1024 butuh sekitar 20 sampai 60 detik, ditambah waktu antre GPU.</span>
+    </div>
+
+    <div id="status" aria-live="polite"></div>
+    <div id="hasil" class="demo-grid" style="margin-top:18px"></div>
+  </div>
+</section>
+</main>
+<script src="assets/js/config.js"></script>
+<script src="assets/data/data.js"></script>
+<script src="assets/js/main.js"></script>
+<script type="module">
+import { Client, handle_file } from "https://cdn.jsdelivr.net/npm/@gradio/client@2.7.0/dist/browser.js";
+
+const C = window.CONFIG, $ = (id) => document.getElementById(id);
+const masukan = { pre: null, post: null };     // File atau URL string
+const KELAS = { "Tidak Terdampak": "none", "Terdampak Sedang": "mid", "Terdampak Berat": "sev" };
+
+/* ---------- pratinjau ---------- */
+function pratinjau(fase, sumber, labelUrl) {
+  const d = $(fase === "pre" ? "dPre" : "dPost"), ph = d.querySelector(".drop-ph");
+  d.querySelector(".pv")?.remove();
+  let src = null, info = "";
+  if (typeof sumber === "string") { src = labelUrl; info = sumber.split("/").pop(); }
+  else if (sumber) {
+    info = `${sumber.name} (${(sumber.size / 1048576).toFixed(1).replace(".", ",")} MB)`;
+    if (/\.(png|jpe?g)$/i.test(sumber.name)) src = URL.createObjectURL(sumber);
+  }
+  ph.innerHTML = sumber ? `<b>${info}</b>${src ? "" : "GeoTIFF siap diproses (pratinjau tidak ditampilkan browser)"}` : '<i class="ph ph-upload-simple" aria-hidden="true"></i><b>Pilih atau seret berkas</b>GeoTIFF, PNG, atau JPG';
+  if (src) { const im = new Image(); im.className = "pv"; im.src = src; im.alt = `Pratinjau citra ${fase}`; d.insertBefore(im, ph); }
+  $("proses").disabled = !(masukan.pre && masukan.post);
+}
+for (const [fase, id, dz] of [["pre", "fPre", "dPre"], ["post", "fPost", "dPost"]]) {
+  $(id).addEventListener("change", (e) => { masukan[fase] = e.target.files[0] || null; pratinjau(fase, masukan[fase]); });
+  const d = $(dz);
+  ["dragenter", "dragover"].forEach((ev) => d.addEventListener(ev, () => d.classList.add("over")));
+  ["dragleave", "drop"].forEach((ev) => d.addEventListener(ev, () => d.classList.remove("over")));
+}
+
+/* ---------- contoh tile dari dataset ---------- */
+const TILES = window.DATA.galeri.map((g) => g.tile);
+$("contoh").innerHTML = TILES.map((t) => `<button class="btn ghost sm" data-t="${t}">Tile ${t}</button>`).join("");
+function pakaiContoh(t) {
+  masukan.pre = C.datasetFile(t, "pre"); masukan.post = C.datasetFile(t, "post");
+  pratinjau("pre", masukan.pre, `assets/img/tile_${t}_pre.jpg`);
+  pratinjau("post", masukan.post, `assets/img/tile_${t}_post.jpg`);
+  $("res").value = C.resolusiPalu;
+}
+$("contoh").addEventListener("click", (e) => { const b = e.target.closest("button"); if (b) pakaiContoh(b.dataset.t); });
+const q = new URLSearchParams(location.search).get("tile");
+if (q && TILES.includes(q)) pakaiContoh(q);
+
+/* ---------- status & galat ---------- */
+/* mode: true = sedang berjalan, false = selesai, "err" = gagal */
+const status = (html, mode = true) => {
+  const ikon = mode === true ? '<span class="pulse"></span>' : mode === "err" ? '<i class="ph ph-warning-circle" aria-hidden="true"></i>' : '<i class="ph ph-check-circle" aria-hidden="true"></i>';
+  $("status").innerHTML = html ? `<div class="status${mode === "err" ? " err" : ""}">${ikon}<div>${html}</div></div>` : "";
+};
+const SKELETON = `<div class="skel img" aria-hidden="true"></div>
+  <div class="skel-rows" aria-hidden="true"><div class="skel row"></div><div class="skel row"></div><div class="skel row"></div><div class="skel row"></div></div>`;
+function pesanGalat(err) {
+  const t = String(err?.message || err || "");
+  if (/No GPU was available|queue/i.test(t)) return `GPU di ZeroGPU sedang penuh (pengunjung tanpa akun Hugging Face mendapat prioritas antrean terendah). Coba lagi beberapa menit lagi, atau buka <a href="${C.spaceUrl}" target="_blank" rel="noopener">aplikasi di Hugging Face</a> dalam keadaan login. Tanpa GPU, Anda tetap dapat melihat <a href="demo.html">demo galeri</a>.`;
+  if (/quota|exceeded/i.test(t)) return `Kuota GPU harian untuk pengunjung sudah habis. Coba lagi nanti, buka <a href="${C.spaceUrl}" target="_blank" rel="noopener">aplikasi di Hugging Face</a> dalam keadaan login, atau lihat <a href="demo.html">demo galeri</a> yang tidak memerlukan GPU.`;
+  if (/sleep|building|starting|not.*running/i.test(t)) return "Aplikasi sedang dinyalakan ulang. Tunggu 1 sampai 2 menit lalu coba lagi.";
+  return `Proses gagal: ${t.replace(/[<>]/g, "") || "kesalahan tidak diketahui"}. Anda juga dapat mencoba langsung di <a href="${C.spaceUrl}" target="_blank" rel="noopener">aplikasi Hugging Face</a>.`;
+}
+
+/* ---------- tampilkan hasil ---------- */
+function tabelHasil(df) {
+  const headers = df?.headers || [], data = df?.data || [];
+  if (!data.length) return `<p class="muted small">Tidak ada lahan pertanian yang terdeteksi.</p>`;
+  const iK = headers.findIndex((h) => /kelas/i.test(h));
+  const rows = data.map((r) => `<tr${/total/i.test(r[iK]) ? ' class="b"' : ""}>` + r.map((c, j) => {
+    if (j === iK) return `<td class="l">${KELAS[c] ? `<span class="dot ${KELAS[c]}"></span> ` : ""}${c}</td>`;
+    return `<td>${typeof c === "number" ? c.toLocaleString("id-ID", { maximumFractionDigits: 4 }) : c}</td>`;
+  }).join("") + "</tr>").join("");
+  return `<div class="table-wrap"><table class="data"><caption>Jumlah poligon dan luas per kelas</caption><thead><tr>${headers.map((h) => `<th>${h}</th>`).join("")}</tr></thead><tbody>${rows}</tbody></table></div>`;
+}
+
+let klien = null;
+$("proses").addEventListener("click", async () => {
+  $("proses").disabled = true; $("hasil").innerHTML = SKELETON;
+  const mulai = performance.now();
+  try {
+    status("Menghubungkan ke aplikasi di Hugging Face…");
+    klien = klien || await Client.connect(C.spaceId, { events: ["data", "status", "log"] });
+    let hasil = null;
+    try { hasil = await jalankan(); }
+    catch (e) {
+      if (!/No GPU was available/i.test(String(e?.message || e))) throw e;
+      status("GPU sedang penuh. Mencoba sekali lagi…");
+      hasil = await jalankan();
+    }
+    if (!hasil) throw new Error("tidak ada keluaran");
+    tampilkan(hasil, mulai);
+  } catch (err) {
+    console.error(err);
+    status(pesanGalat(err), "err");
+    $("hasil").innerHTML = "";
+  } finally {
+    $("proses").disabled = !(masukan.pre && masukan.post);
+  }
+});
+
+async function jalankan() {
+    const berkas = (x) => handle_file(x);
+    const job = klien.submit("/proses", [berkas(masukan.pre), berkas(masukan.post), Number($("res").value) || C.resolusiPalu]);
+    let hasil = null;
+    for await (const ev of job) {
+      if (ev.type === "log") {
+        if (/Waiting/i.test(ev.log)) status("Menunggu GPU tersedia di ZeroGPU…");
+        else if (/acquired/i.test(ev.log)) status("GPU didapat. Memproses: deteksi petak → enam layer fitur → klasifikasi…");
+        else if (ev.level === "error") throw new Error(ev.log);
+      }
+      if (ev.type === "status") {
+        if (ev.stage === "pending") status(ev.position != null ? `Dalam antrean (posisi ${ev.position + 1})…` : "Mengunggah citra dan menunggu GPU…");
+        if (ev.stage === "generating" || ev.stage === "processing") status("Memproses: deteksi petak → enam layer fitur → klasifikasi…");
+        if (ev.stage === "error") throw new Error(ev.message || "error");
+      }
+      if (ev.type === "data") { hasil = ev.data; break; }
+    }
+    return hasil;
+}
+
+function tampilkan(hasil, mulai) {
+    const [overlay, tabel, log] = hasil;
+    const dtk = ((performance.now() - mulai) / 1000).toFixed(1).replace(".", ",");
+    if (!overlay) { status(`Proses selesai tanpa gambar (${dtk} detik). Lihat log di bawah.`, false); }
+    else status(`Selesai dalam ${dtk} detik.`, false);
+    $("hasil").innerHTML = `
+      <div>${overlay ? `<img class="result-img" src="${overlay.url}" alt="Overlay kelas kerusakan" data-zoom="${overlay.url}">
+        <div class="legend"><span><i class="dot none"></i>Tidak Terdampak</span><span><i class="dot mid"></i>Terdampak Sedang</span><span><i class="dot sev"></i>Terdampak Berat</span></div>` : ""}</div>
+      <div class="grid" style="gap:14px">${tabelHasil(tabel)}
+        <details class="card small"><summary><b>Log proses</b></summary><pre class="log" style="margin-top:10px">${String(log || "").replace(/[<>]/g, "")}</pre></details>
+        <div class="callout small">Hasil bersifat indikatif: kelas Terdampak Berat paling andal, sedangkan Terdampak Sedang dan poligon kecil perlu diperiksa ulang. Aplikasi tidak dapat mengenali <em>false positive</em> karena tidak ada ground truth.</div></div>`;
+}
+</script>
+</body>
+</html>

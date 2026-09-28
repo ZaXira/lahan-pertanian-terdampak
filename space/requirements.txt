@@ -1,0 +1,45 @@
+# Dependensi untuk Hugging Face Spaces (ZeroGPU).
+# Untuk pengembangan lokal CPU (Windows), pakai requirements-lokal.txt.
+#
+# ZeroGPU mensyaratkan: SDK Gradio, PyTorch >= 2.8.0, Python 3.12.12 (torchange butuh >= 3.11).
+# Torch di sini sengaja versi CUDA (default PyPI), bukan build +cpu.
+
+gradio==6.28.0
+spaces
+torch==2.8.0
+torchvision==0.23.0
+opencv-python-headless
+pillow
+numpy
+pandas
+scipy
+shapely
+rasterio
+affine
+geopandas
+matplotlib
+scikit-image
+safetensors
+# scikit-learn dipin ke versi yang dipakai saat menyimpan model_random_forest.joblib
+scikit-learn==1.6.1
+joblib
+segment-anything
+pycocotools
+huggingface_hub
+setuptools
+
+# Dependensi runtime detectron2 (dipakai dari third_party/, jadi tidak ikut terpasang otomatis)
+fvcore
+iopath
+omegaconf
+hydra-core
+yacs
+termcolor
+tabulate
+cloudpickle
+tqdm
+# AnyChange (layer 6 SAC)
+torchange @ git+https://github.com/Z-Zheng/pytorch-change-models.git
+
+# detectron2 TIDAK diinstal lewat pip: source-nya ikut di repo (third_party/detectron2)
+# dan dipakai tanpa kompilasi C++ — model R50-FPN hanya butuh op torchvision.

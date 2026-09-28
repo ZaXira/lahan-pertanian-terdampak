@@ -1,0 +1,40 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+
+# Virtual environment
+venv/
+.venv/
+
+# Environment variables
+.env
+
+# Model besar (di-host terpisah, lihat Fase 7)
+*.pth
+*.joblib
+
+# Data uji besar
+*.tif
+*.tiff
+*.zip
+
+# Editor / OS
+.vscode/
+.idea/
+Thumbs.db
+.DS_Store
+
+# Gradio
+.gradio/
+flagged/
+
+# third_party/detectron2 IKUT di-commit (dipakai tanpa build C++, Apache-2.0)
+third_party/*
+!third_party/detectron2/
+
+# Hasil ekstrak bundle & output uji lokal
+tests/_bundle/
+tests/_out/
+tests/_dev_*.py

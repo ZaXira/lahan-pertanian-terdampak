@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#2f5d27">
+<title>Demo Galeri | Lahan Terdampak</title>
+<meta name="description" content="Bandingkan citra sebelum dan sesudah bencana serta hasil penilaian kerusakan lahan pertanian pada 4 tile uji Palu 2018.">
+<link rel="icon" href="assets/img/logo-stis.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700;1,800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body data-page="demo">
+<main>
+<section class="hero page">
+  <div class="wrap">
+    <div class="rv">
+      <div class="eyebrow">Demo galeri, tanpa GPU</div>
+      <h1>Jelajahi empat tile uji Palu</h1>
+      <p class="lead">Pilih tile, bandingkan citra sebelum dan sesudah bencana, lalu jalankan penilaian. Hasilnya adalah keluaran aplikasi pada jalur GeoTIFF, identik dengan hasil resmi penelitian.</p>
+    </div>
+  </div>
+</section>
+
+<section style="padding-top:12px">
+  <div class="wrap">
+    <div class="tile-pick" id="pick"></div>
+    <div class="demo-grid">
+      <div>
+        <div class="seg" id="kanan" role="group" aria-label="Lapisan kanan">
+          <button aria-pressed="true" data-r="post">Sesudah bencana</button>
+          <button aria-pressed="false" data-r="overlay_crop">Hasil penilaian</button>
+        </div>
+        <div class="compare" id="cmp" style="margin-top:12px">
+          <picture><source id="rSrc" type="image/webp"><img id="rImg" alt=""></picture>
+          <picture><source id="lSrc" type="image/webp"><img id="lImg" class="top" alt=""></picture>
+          <div class="handle"></div>
+          <span class="tag l">Sebelum</span><span class="tag r" id="rTag">Sesudah</span>
+          <input type="range" min="0" max="100" value="50" aria-label="Geser pembanding">
+        </div>
+        <div class="legend"><span><i class="dot none"></i>Tidak Terdampak</span><span><i class="dot mid"></i>Terdampak Sedang</span><span><i class="dot sev"></i>Terdampak Berat</span></div>
+      </div>
+      <div class="stack">
+        <div class="card">
+          <h3 id="judulTile">Tile</h3>
+          <p class="small muted" id="infoTile"></p>
+          <div class="btn-row">
+            <button class="btn" id="jalan"><i class="ph ph-play" aria-hidden="true"></i>Jalankan penilaian</button>
+            <a class="btn ghost" id="keUnggah" href="unggah.html">Proses ulang di GPU</a>
+          </div>
+        </div>
+        <div id="hasil" class="stack" aria-live="polite"></div>
+        <div class="small" style="padding:4px 4px 0">
+          <b>Unduh pasangan citra GeoTIFF tile ini</b>
+          <p class="muted" style="margin:.3em 0 .7em">Citra 32-bit hasil georeferensi ulang (EPSG:32751, 0,4984 m/piksel), siap diunggah ke aplikasi.</p>
+          <div class="btn-row"><a class="btn ghost sm" id="dlPre" href="#" rel="noopener"><i class="ph ph-download-simple" aria-hidden="true"></i>Citra sebelum</a><a class="btn ghost sm" id="dlPost" href="#" rel="noopener"><i class="ph ph-download-simple" aria-hidden="true"></i>Citra sesudah</a></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+<script src="assets/js/config.js"></script>
+<script src="assets/data/data.js"></script>
+<script src="assets/js/main.js"></script>
+<script>
+(function () {
+  const G = window.DATA.galeri, C = window.CONFIG;
+  const KELAS = { "Tidak Terdampak": "none", "Terdampak Sedang": "mid", "Terdampak Berat": "sev" };
+  const nomor = (s) => Number(String(s).replace(",", "."));
+  let pilih = G[0].tile, kanan = "post";
+  const $ = (id) => document.getElementById(id);
+
+  $("pick").innerHTML = G.map((g) => `<button class="tile-btn" data-t="${g.tile}" aria-pressed="false">
+      <picture><source srcset="assets/img/tile_${g.tile}_pre.webp" type="image/webp"><img src="assets/img/tile_${g.tile}_pre.jpg" alt="Tile ${g.tile}" loading="lazy"></picture>
+      <span>Tile ${g.tile}<small>${g.resmi.n_gt} petak ground truth</small></span></button>`).join("");
+
+  const pasangGambar = (el, src, t, lapis) => {
+    el.src = `assets/img/tile_${t}_${lapis}.jpg`;
+    src.srcset = `assets/img/tile_${t}_${lapis}.webp`;
+  };
+  function tampil() {
+    const g = G.find((x) => x.tile === pilih);
+    document.querySelectorAll(".tile-btn").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.t === pilih)));
+    pasangGambar($("lImg"), $("lSrc"), pilih, "pre"); $("lImg").alt = `Citra sebelum bencana tile ${pilih}`;
+    pasangGambar($("rImg"), $("rSrc"), pilih, kanan); $("rImg").alt = kanan === "post" ? `Citra sesudah bencana tile ${pilih}` : `Hasil penilaian tile ${pilih}`;
+    $("rTag").textContent = kanan === "post" ? "Sesudah" : "Hasil";
+    $("judulTile").textContent = `Tile ${pilih}`;
+    $("infoTile").textContent = `${g.resmi.n_gt} petak pada ground truth. Citra ${g.ukuran_pre[0]}×${g.ukuran_pre[1]} piksel (pratinjau).`;
+    $("keUnggah").href = `unggah.html?tile=${pilih}`;
+    $("dlPre").href = C.datasetFile(pilih, "pre"); $("dlPost").href = C.datasetFile(pilih, "post");
+    $("hasil").innerHTML = "";
+  }
+  $("pick").addEventListener("click", (e) => { const b = e.target.closest(".tile-btn"); if (!b) return; pilih = b.dataset.t; kanan = "post"; setSeg(); tampil(); });
+  const setSeg = () => document.querySelectorAll("#kanan button").forEach((x) => x.setAttribute("aria-pressed", String(x.dataset.r === kanan)));
+  $("kanan").addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b) return; kanan = b.dataset.r; setSeg(); tampil(); });
+
+  $("jalan").addEventListener("click", () => {
+    const g = G.find((x) => x.tile === pilih), r = g.resmi;
+    $("jalan").disabled = true;
+    $("hasil").innerHTML = `<div class="status"><span class="pulse"></span><div>Mendeteksi petak, mengukur enam <em>layer</em> perubahan, dan mengklasifikasi…</div></div>
+      <div class="skel-rows" aria-hidden="true"><div class="skel row"></div><div class="skel row"></div><div class="skel row"></div><div class="skel row"></div></div>`;
+    setTimeout(() => {
+      kanan = "overlay_crop"; setSeg(); tampil(); $("jalan").disabled = false;
+      const baris = g.luas.map((x) => {
+        const k = x["Kelas Kerusakan"], total = k === "Total";
+        return `<tr${total ? ' class="b"' : ""}><td class="l">${total ? "Total" : `<span class="dot ${KELAS[k]}"></span> ${k}`}</td><td>${Number(x["Jumlah Poligon"]).toLocaleString("id-ID")}</td><td>${fmt(nomor(x["Total Luas (ha)"]))}</td></tr>`;
+      }).join("");
+      $("hasil").innerHTML = `<div class="table-wrap"><table class="data"><caption>Hasil penilaian tile ${pilih}</caption>
+          <thead><tr><th>Kelas kerusakan</th><th>Jumlah poligon</th><th>Luas (ha)</th></tr></thead><tbody>${baris}</tbody></table>
+          <p class="tnote">Luas dihitung dari jumlah piksel × 0,4984² m². Sumber: keluaran aplikasi pada jalur GeoTIFF (FP32).</p></div>
+        <div class="callout small"><b>Dibandingkan dengan <em>ground truth</em> tile ini:</b>
+          ${r.TP} dari ${r.n_gt} petak terdeteksi (<em>recall</em> ${fmt(+r.recall_lokalisasi)}), ${r.FP} prediksi tanpa pasangan, F1_lokalisasi ${fmt(+r.f1_lokalisasi)}, dan akurasi kelas pada pasangan terdeteksi ${fmt(+r.akurasi_klasifikasi_matched)}.</div>
+        <p class="small" style="margin:0"><a class="link" href="#" data-zoom="assets/img/tile_${pilih}_overlay.jpg"><i class="ph ph-magnifying-glass-plus" aria-hidden="true"></i>Lihat overlay beserta legenda</a></p>`;
+    }, 1400);
+  });
+
+  const q = new URLSearchParams(location.search).get("tile");
+  if (q && G.some((g) => g.tile === q)) pilih = q;
+  tampil();
+})();
+</script>
+</body>
+</html>

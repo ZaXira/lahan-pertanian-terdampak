@@ -14,5 +14,6 @@ window.CONFIG = {
   datasetUrl: "https://huggingface.co/datasets/ZaXira/palu-tsunami-lahan-pertanian",
   datasetFile: (tile, fase) =>
     `https://huggingface.co/datasets/ZaXira/palu-tsunami-lahan-pertanian/resolve/main/tif/palu-tsunami_${tile}_${fase}_disaster.tif`,
+  githubUrl: "https://github.com/ZaXira/lahan-pertanian-terdampak",
   resolusiPalu: 0.4984
 };

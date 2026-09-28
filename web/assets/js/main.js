@@ -60,6 +60,7 @@
       <div><h4>Tautan</h4><ul class="small">
         <li><a href="${C.spaceUrl}" target="_blank" rel="noopener">Aplikasi di Hugging Face Spaces</a></li>
         <li><a href="${C.datasetUrl}" target="_blank" rel="noopener">Contoh citra GeoTIFF (dataset)</a></li>
+        <li><a href="${C.githubUrl}" target="_blank" rel="noopener">Kode sumber di GitHub</a></li>
         <li><a href="https://xview2.org" target="_blank" rel="noopener">Sumber citra: xBD / xView2</a></li></ul></div>
     </div>
     <div class="fine">Citra: xBD (Gupta dkk., 2019), lisensi CC BY-NC-SA 4.0. Angka pada situs ini diambil langsung dari keluaran resmi penelitian.

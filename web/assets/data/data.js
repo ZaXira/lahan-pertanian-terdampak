@@ -127,7 +127,7 @@ window.DATA = {
       2
      ],
      [
-      "Poligon dilewati",
+      "Segmen dilewati",
       1,
       2
      ]
@@ -284,7 +284,7 @@ window.DATA = {
      "–"
     ]
    ],
-   "keterangan": "n_pred = jumlah poligon prediksi yang dievaluasi; n_GT = jumlah poligon *ground truth*; TP = pasangan dengan IoU ≥ 0,5. Baris gabungan (mikro) menjumlahkan TP, n_pred, dan n_GT keempat *tile* sebelum *precision*, *recall*, dan F1 dihitung (angka turunan). F1 piksel tidak dapat diagregasi mikro dari berkas yang tersedia (–). Poligon dilewati = poligon prediksi YOLOv8-seg yang geometrinya tidak dapat diperbaiki `safe_geometry`; poligon ini dibuang sebelum evaluasi dan tidak termasuk dalam n_pred.",
+   "keterangan": "n_pred = jumlah segmen prediksi yang dievaluasi; n_GT = jumlah segmen *ground truth*; TP = pasangan dengan IoU ≥ 0,5. Baris gabungan (mikro) menjumlahkan TP, n_pred, dan n_GT keempat *tile* sebelum *precision*, *recall*, dan F1 dihitung (angka turunan). F1 piksel tidak dapat diagregasi mikro dari berkas yang tersedia (–). Segmen dilewati = segmen prediksi YOLOv8-seg yang geometrinya tidak dapat diperbaiki `safe_geometry`; segmen ini dibuang sebelum evaluasi dan tidak termasuk dalam n_pred.",
    "tebal": [
     5,
     11
@@ -304,7 +304,7 @@ window.DATA = {
       2
      ],
      [
-      "*Tile* validasi terpadat (poligon)",
+      "*Tile* validasi terpadat (segmen)",
       1,
       2
      ],
@@ -404,7 +404,7 @@ window.DATA = {
      "1.885,1"
     ]
    ],
-   "keterangan": "mAP50 dan mAP50-95 *mask* YOLOv8-seg berasal dari Ultralytics (rentang 0–1); AP *mask* Mask R-CNN berasal dari evaluator COCO detectron2 (rerata IoU 0,50–0,95, rentang 0–100), sehingga kedua kolom tidak dapat dibandingkan secara langsung. *Epoch* terbaik ditentukan dari `results.csv` (nilai *fitness* tertinggi). *Tile* validasi terpadat dan jumlah poligonnya mengacu pada Tabel 3.4 dan Tabel 3.15. *Fold* yang diuji pada data uji: YOLOv8-seg *fold* 2, Mask R-CNN *fold* 3.",
+   "keterangan": "mAP50 dan mAP50-95 *mask* YOLOv8-seg berasal dari Ultralytics (rentang 0–1); AP *mask* Mask R-CNN berasal dari evaluator COCO detectron2 (rerata IoU 0,50–0,95, rentang 0–100), sehingga kedua kolom tidak dapat dibandingkan secara langsung. *Epoch* terbaik ditentukan dari `results.csv` (nilai *fitness* tertinggi). *Tile* validasi terpadat dan jumlah segmennya mengacu pada Tabel 3.4 dan Tabel 3.15. *Fold* yang diuji pada data uji: YOLOv8-seg *fold* 2, Mask R-CNN *fold* 3.",
    "tebal": [
     4
    ],
@@ -496,7 +496,7 @@ window.DATA = {
       1
      ],
      [
-      "κ berbobot kuadratik",
+      "κ tertimbang kuadratik",
       1,
       1
      ]
@@ -540,7 +540,7 @@ window.DATA = {
      "0,4566"
     ]
    ],
-   "keterangan": "κ = Cohen's Kappa berbobot kuadratik (Persamaan 2.21–2.22). Metrik utama Tujuan 2 adalah F1-*macro* dan κ; akurasi hanya pelengkap karena data uji timpang.",
+   "keterangan": "κ = Cohen's Kappa tertimbang kuadratik (Persamaan 2.21–2.22). Metrik utama Tujuan 2 adalah F1-*macro* dan κ; akurasi hanya pelengkap karena data uji timpang.",
    "tebal": [],
    "panel": []
   },
@@ -697,7 +697,7 @@ window.DATA = {
      "0,7542"
     ]
    ],
-   "keterangan": "*Precision* dan *recall* per kelas diturunkan dari *confusion matrix* pada `training_log.json`; F1 per kelas identik dengan nilai resmi. n (%) = jumlah dan proporsi poligon aktual per kelas (Tabel 3.16); proporsi pada data latih: Tidak Terdampak 18,0%, Terdampak Sedang 9,8%, Terdampak Berat 72,2%.",
+   "keterangan": "*Precision* dan *recall* per kelas diturunkan dari *confusion matrix* pada `training_log.json`; F1 per kelas identik dengan nilai resmi. n (%) = jumlah dan proporsi segmen aktual per kelas (Tabel 3.16); proporsi pada data latih: Tidak Terdampak 18,0%, Terdampak Sedang 9,8%, Terdampak Berat 72,2%.",
    "tebal": [],
    "panel": [
     0,
@@ -913,7 +913,7 @@ window.DATA = {
    "panel": []
   },
   "T4.3.b": {
-   "judul": "Hasil lokalisasi *pipeline end-to-end* (Tujuan 3) dibandingkan dengan Mask R-CNN Tujuan 1 pada basis yang sama",
+   "judul": "Hasil lokalisasi model Mask R-CNN–RF (Tujuan 3) dibandingkan dengan Mask R-CNN Tujuan 1 pada basis yang sama",
    "kepala": [
     [
      [
@@ -1135,7 +1135,7 @@ window.DATA = {
    ]
   },
   "T4.3.c2": {
-   "judul": "*Recall* lokalisasi *pipeline end-to-end* menurut kuartil luas poligon *ground truth*",
+   "judul": "*Recall* lokalisasi model Mask R-CNN–RF menurut kuartil luas segmen *ground truth*",
    "kepala": [
     [
      [
@@ -1195,12 +1195,12 @@ window.DATA = {
      "0,7285"
     ]
    ],
-   "keterangan": "Angka turunan (`data_turunan/ringkasan_deteksi_per_ukuran.csv`); luas poligon GT dihitung dengan shapely pada EPSG:32751. Keempat kuartil masing-masing memuat 151 poligon dari 604 poligon GT data uji.",
+   "keterangan": "Angka turunan (`data_turunan/ringkasan_deteksi_per_ukuran.csv`); luas segmen GT dihitung dengan shapely pada EPSG:32751. Keempat kuartil masing-masing memuat 151 segmen dari 604 segmen GT data uji.",
    "tebal": [],
    "panel": []
   },
   "T4.3.d": {
-   "judul": "F1 per kelas (*matched-only*) *pipeline end-to-end* dibandingkan dengan Random Forest Tujuan 2 pada data uji",
+   "judul": "F1 Mask R-CNN–RF dibandingkan dengan Random Forest Tujuan 2 pada data uji",
    "kepala": [
     [
      [
@@ -1214,7 +1214,7 @@ window.DATA = {
       1
      ],
      [
-      "Tujuan 3, *matched-only* (n = 399)",
+      "Tujuan 3, model Mask R-CNN–RF (n = 399)",
       3,
       1
      ],
@@ -1299,14 +1299,14 @@ window.DATA = {
      "−0,0183"
     ]
    ],
-   "keterangan": "*Precision* dan *recall* per kelas diturunkan dari *confusion matrix*; F1 per kelas identik dengan nilai resmi. Selisih = F1 Tujuan 3 − F1 Tujuan 2, dihitung dari nilai tak terbulat. Poligon *false positive* (127) tidak termasuk dalam evaluasi *matched-only*.",
+   "keterangan": "*Precision* dan *recall* per kelas diturunkan dari *confusion matrix*; F1 per kelas identik dengan nilai resmi. Selisih = F1 Tujuan 3 − F1 Tujuan 2, dihitung dari nilai tak terbulat. Segmen *false positive* (127) tidak termasuk dalam evaluasi F1 Mask R-CNN–RF.",
    "tebal": [
     3
    ],
    "panel": []
   },
   "T4.3.f": {
-   "judul": "Komponen Skor gabungan xView2 dan mIoU *pipeline end-to-end*",
+   "judul": "Komponen Skor gabungan xView2 dan mIoU model Mask R-CNN–RF",
    "kepala": [
     [
      [
@@ -1331,15 +1331,15 @@ window.DATA = {
      "0,7062"
     ],
     [
-     "F1 per kelas (*matched-only*): Tidak Terdampak",
+     "F1 Mask R-CNN–RF: Tidak Terdampak",
      "0,5328"
     ],
     [
-     "F1 per kelas (*matched-only*): Terdampak Sedang",
+     "F1 Mask R-CNN–RF: Terdampak Sedang",
      "0,0548"
     ],
     [
-     "F1 per kelas (*matched-only*): Terdampak Berat",
+     "F1 Mask R-CNN–RF: Terdampak Berat",
      "0,8283"
     ],
     [
@@ -1379,7 +1379,7 @@ window.DATA = {
      "0,4005"
     ]
    ],
-   "keterangan": "Seluruh nilai merupakan agregasi global (mikro) empat *tile* uji dari `summary_tujuan3.json`. mIoU dihitung pada tingkat piksel dengan kelas latar belakang, sehingga memuat pengaruh *false negative*, *false positive*, dan salah kelas sekaligus.",
+   "keterangan": "Seluruh nilai merupakan agregasi global (mikro) empat *tile* uji dari `summary_tujuan3.json`. mIoU dihitung pada tingkat piksel dengan kelas latar belakang, sehingga memuat pengaruh *false negative*, *false positive*, dan TP kelas salah sekaligus.",
    "tebal": [
     7,
     13
@@ -1390,7 +1390,7 @@ window.DATA = {
    ]
   },
   "T4.3.g": {
-   "judul": "Kinerja klasifikasi dan komposisi kelas *pipeline end-to-end* per *tile* uji",
+   "judul": "Kinerja klasifikasi dan komposisi kelas model Mask R-CNN–RF per *tile* uji",
    "kepala": [
     [
      [
@@ -1427,7 +1427,7 @@ window.DATA = {
    ],
    "rows": [
     [
-     "§Klasifikasi pasangan *matched*",
+     "§Klasifikasi pasangan TP",
      "",
      "",
      "",
@@ -1435,7 +1435,7 @@ window.DATA = {
      ""
     ],
     [
-     "Pasangan *matched* (TP)",
+     "Pasangan TP",
      "67",
      "106",
      "147",
@@ -1443,7 +1443,7 @@ window.DATA = {
      "399"
     ],
     [
-     "Benar kelas",
+     "TP kelas benar",
      "36",
      "53",
      "107",
@@ -1451,7 +1451,7 @@ window.DATA = {
      "264"
     ],
     [
-     "Salah kelas",
+     "TP kelas salah",
      "31",
      "53",
      "40",
@@ -1459,7 +1459,7 @@ window.DATA = {
      "135"
     ],
     [
-     "Akurasi *matched*",
+     "Akurasi model Mask R-CNN–RF",
      "0,5373",
      "0,5000",
      "0,7279",
@@ -1467,7 +1467,7 @@ window.DATA = {
      "0,6617"
     ],
     [
-     "§Komposisi kelas GT seluruh poligon (Tabel 3.4)",
+     "§Komposisi kelas GT seluruh segmen (Tabel 3.4)",
      "",
      "",
      "",
@@ -1499,7 +1499,7 @@ window.DATA = {
      "268 (44,4%)"
     ],
     [
-     "§Komposisi kelas GT pasangan *matched*",
+     "§Komposisi kelas GT pasangan TP",
      "",
      "",
      "",
@@ -1531,7 +1531,7 @@ window.DATA = {
      "201 (50,4%)"
     ],
     [
-     "§*Recall* klasifikasi per kelas GT pada pasangan *matched*",
+     "§*Recall* klasifikasi per kelas GT pada pasangan TP",
      "",
      "",
      "",
@@ -1595,7 +1595,7 @@ window.DATA = {
      "0,7500"
     ]
    ],
-   "keterangan": "Hasil lokalisasi per *tile* disajikan pada Tabel 4.10. Akurasi *matched* per *tile* dari `test_results_per_tile.csv`; jumlah benar/salah kelas, komposisi pasangan *matched*, dan *recall* per kelas diturunkan dari `match_all_4tile.csv`. *Recall* klasifikasi = pasangan yang kelasnya benar dibagi pasangan *matched* pada kelas GT yang sama; *recall* lokalisasi = pasangan *matched* dibagi poligon GT pada kelas yang sama. Tanda – = tidak terdefinisi (penyebut nol).",
+   "keterangan": "Hasil lokalisasi per *tile* disajikan pada Tabel 4.10. Akurasi model Mask R-CNN–RF per *tile* dari `test_results_per_tile.csv`; jumlah TP kelas benar/salah, komposisi pasangan TP, dan *recall* per kelas diturunkan dari `match_all_4tile.csv`. *Recall* klasifikasi = pasangan yang kelasnya benar dibagi pasangan TP pada kelas GT yang sama; *recall* lokalisasi = pasangan TP dibagi segmen GT pada kelas yang sama. Tanda – = tidak terdefinisi (penyebut nol).",
    "tebal": [],
    "panel": [
     0,
@@ -1606,7 +1606,7 @@ window.DATA = {
    ]
   },
   "T4.3.i": {
-   "judul": "Dekomposisi perubahan F1 per kelas dari Tujuan 2 ke skenario *oracle* dan *matched-only*",
+   "judul": "Dekomposisi perubahan F1 per kelas dari Tujuan 2 ke model pembanding dan model Mask R-CNN–RF",
    "kepala": [
     [
      [
@@ -1632,27 +1632,27 @@ window.DATA = {
       1
      ],
      [
-      "*Oracle* (n = 399, geometri GT)",
+      "Model pembanding (n = 399, geometri GT)",
       1,
       1
      ],
      [
-      "*Matched-only* (n = 399, geometri Mask R-CNN)",
+      "Model Mask R-CNN–RF (n = 399, geometri Mask R-CNN)",
       1,
       1
      ],
      [
-      "Δ subset (*oracle* − Tujuan 2)",
+      "Δ subset (model pembanding − Tujuan 2)",
       1,
       1
      ],
      [
-      "Δ geometri (*matched-only* − *oracle*)",
+      "Δ geometri (model Mask R-CNN–RF − model pembanding)",
       1,
       1
      ],
      [
-      "Δ total (*matched-only* − Tujuan 2)",
+      "Δ total (model Mask R-CNN–RF − Tujuan 2)",
       1,
       1
      ]
@@ -1696,14 +1696,14 @@ window.DATA = {
      "−0,0183"
     ]
    ],
-   "keterangan": "Seluruh selisih merupakan angka turunan yang dihitung dari *confusion matrix* tanpa pembulatan antara, sehingga dapat berbeda satu satuan digit terakhir dari selisih dua nilai yang sudah dibulatkan. Δ subset mengukur pengaruh penyempitan himpunan poligon (604 → 399) dengan geometri tetap GT; Δ geometri mengukur pengaruh penggantian geometri GT dengan geometri hasil deteksi.",
+   "keterangan": "Seluruh selisih merupakan angka turunan yang dihitung dari *confusion matrix* tanpa pembulatan antara, sehingga dapat berbeda satu satuan digit terakhir dari selisih dua nilai yang sudah dibulatkan. Δ subset mengukur pengaruh penyempitan himpunan segmen (604 → 399) dengan geometri tetap GT; Δ geometri mengukur pengaruh penggantian geometri GT dengan geometri hasil deteksi.",
    "tebal": [
     3
    ],
    "panel": []
   },
   "T4.3.j": {
-   "judul": "Estimasi jumlah dan luas lahan per kelas: *ground truth* dan *pipeline end-to-end*",
+   "judul": "Estimasi jumlah dan luas lahan per kelas: *ground truth* dan model Mask R-CNN–RF",
    "kepala": [
     [
      [
@@ -1717,7 +1717,7 @@ window.DATA = {
       1
      ],
      [
-      "Prediksi *pipeline*",
+      "Prediksi model Mask R-CNN–RF",
       2,
       1
      ],
@@ -1734,7 +1734,7 @@ window.DATA = {
     ],
     [
      [
-      "Poligon",
+      "Segmen",
       1,
       1
      ],
@@ -1744,7 +1744,7 @@ window.DATA = {
       1
      ],
      [
-      "Poligon",
+      "Segmen",
       1,
       1
      ],
@@ -1754,7 +1754,7 @@ window.DATA = {
       1
      ],
      [
-      "Poligon",
+      "Segmen",
       1,
       1
      ],
@@ -1807,14 +1807,14 @@ window.DATA = {
      "−6,71"
     ]
    ],
-   "keterangan": "Angka turunan (`data_turunan/ringkasan_luas_per_kelas.csv`), gabungan empat *tile* uji; luas dihitung dengan shapely pada EPSG:32751. Kelas prediksi *pipeline* meliputi seluruh 526 poligon (termasuk *false positive*). Luas prediksi dijumlahkan per poligon sehingga tumpang tindih antarprediksi terhitung ganda. Selisih = luas prediksi − luas GT. Luas ini tidak sebanding langsung dengan luas keluaran artefak web yang dihitung dari jumlah piksel × resolusi².",
+   "keterangan": "Angka turunan (`data_turunan/ringkasan_luas_per_kelas.csv`), gabungan empat *tile* uji; luas dihitung dengan shapely pada EPSG:32751. Kelas prediksi model Mask R-CNN–RF meliputi seluruh 526 segmen (termasuk *false positive*). Luas prediksi dijumlahkan per segmen sehingga tumpang tindih antarprediksi terhitung ganda. Selisih = luas prediksi − luas GT. Luas ini tidak sebanding langsung dengan luas keluaran artefak web yang dihitung dari jumlah piksel × resolusi².",
    "tebal": [
     3
    ],
    "panel": []
   },
   "T4.3.k": {
-   "judul": "Tipologi poligon *false positive pipeline end-to-end*",
+   "judul": "Tipologi segmen *false positive model Mask R-CNN–RF*",
    "kepala": [
     [
      [
@@ -1918,7 +1918,7 @@ window.DATA = {
      "82"
     ]
    ],
-   "keterangan": "Angka turunan (`data_turunan/ringkasan_tipologi_fp.csv`); cakupan = persentase luas poligon prediksi yang jatuh di atas poligon GT mana pun, dihitung dengan shapely pada EPSG:32751. Kolom kelas prediksi baris jumlah dari `match_all_4tile.csv`. TT = Tidak Terdampak; TS = Terdampak Sedang; TB = Terdampak Berat. \"Di luar lahan GT\" tidak otomatis berarti bukan lahan pertanian.",
+   "keterangan": "Angka turunan (`data_turunan/ringkasan_tipologi_fp.csv`); cakupan = persentase luas segmen prediksi yang jatuh di atas segmen GT mana pun, dihitung dengan shapely pada EPSG:32751. Kolom kelas prediksi baris jumlah dari `match_all_4tile.csv`. TT = Tidak Terdampak; TS = Terdampak Sedang; TB = Terdampak Berat. \"Di luar lahan GT\" tidak otomatis berarti bukan lahan pertanian.",
    "tebal": [
     4
    ],
@@ -1934,7 +1934,7 @@ window.DATA = {
       1
      ],
      [
-      "Jumlah poligon",
+      "Jumlah segmen",
       1,
       1
      ],
@@ -2031,7 +2031,7 @@ window.DATA = {
       1
      ],
      [
-      "Poligon aplikasi/resmi",
+      "Segmen aplikasi/resmi",
       1,
       1
      ],
@@ -2086,7 +2086,7 @@ window.DATA = {
    "panel": []
   },
   "T4.4.d": {
-   "judul": "Pengaruh cara penyiapan citra masukan terhadap keluaran artefak web (4 *tile*, 526 poligon resmi)",
+   "judul": "Pengaruh cara penyiapan citra masukan terhadap keluaran artefak web (4 *tile*, 526 segmen resmi)",
    "kepala": [
     [
      [
@@ -2095,7 +2095,7 @@ window.DATA = {
       1
      ],
      [
-      "Poligon ditemukan",
+      "Segmen ditemukan",
       1,
       1
      ],
@@ -2123,7 +2123,7 @@ window.DATA = {
      "199 (37,8%)"
     ]
    ],
-   "keterangan": "Dijalankan di Kaggle GPU. Persentase terhadap 526 poligon hasil resmi Tujuan 3.",
+   "keterangan": "Dijalankan di Kaggle GPU. Persentase terhadap 526 segmen hasil resmi Tujuan 3.",
    "tebal": [],
    "panel": []
   },
@@ -2137,7 +2137,7 @@ window.DATA = {
       1
      ],
      [
-      "Jumlah poligon",
+      "Jumlah segmen",
       1,
       1
      ],
@@ -2219,7 +2219,7 @@ window.DATA = {
     [
      "Pembagian data",
      "*Label shift* dan pergeseran kovariat pada peubah ukuran objek antara data latih dan data uji",
-     "Kolaps kelas Terdampak Sedang (F1 0,0545)",
+     "Kegagalan kelas Terdampak Sedang (F1 0,0545)",
      "Keutuhan *tile* dipertahankan demi kesahihan spasial; kedua pergeseran dikuantifikasi (Tabel 3.16, Tabel 3.17, Subbab 4.2.2)"
     ],
     [
@@ -2231,12 +2231,12 @@ window.DATA = {
     [
      "Deteksi objek kecil",
      "*Recall* lokalisasi kuartil luas terkecil hanya 0,4371",
-     "33,9% poligon uji tidak terdeteksi dan tidak dapat dinilai kerusakannya",
+     "33,9% segmen uji tidak terdeteksi dan tidak dapat dinilai kerusakannya",
      "Dikuantifikasi melalui tipologi *false negative* dan kuartil luas (Tabel 4.11 dan Tabel 4.12)"
     ],
     [
      "Cakupan evaluasi",
-     "Evaluasi *matched-only* tidak memuat 127 *false positive*",
+     "Evaluasi model Mask R-CNN–RF tidak memuat 127 *false positive*",
      "Skor gabungan xView2 tidak mencerminkan risiko prediksi palsu",
      "Tipologi *false positive* dilaporkan terpisah (Subbab 4.3.6)"
     ],
@@ -2249,7 +2249,7 @@ window.DATA = {
     [
      "Artefak web",
      "Kesetaraan hasil bergantung pada GeoTIFF 32-bit, presisi FP32, dan ketersediaan GPU",
-     "Konversi persentil per kanal hanya 37,8% kelas sama; TF32 menggeser 2 dari 115 poligon",
+     "Konversi persentil per kanal hanya 37,8% kelas sama; TF32 menggeser 2 dari 115 segmen",
      "Presisi dikunci ke FP32 dan panduan penyiapan citra disusun (Subbab 4.4.1 poin c–d)"
     ]
    ],
@@ -2287,7 +2287,7 @@ window.DATA = {
     [
      "Kementerian Pertanian dan dinas pertanian daerah",
      "Sebaran dan tingkat keparahan kerusakan lahan pertanian sebagai dasar perencanaan bantuan dan pemulihan",
-     "Poligon lahan berlabel kelas kerusakan beserta luas per kelas",
+     "Segmen lahan berlabel kelas kerusakan beserta luas per kelas",
      "Kelas Terdampak Berat paling andal; kelas Terdampak Sedang memerlukan verifikasi lapangan"
     ],
     [

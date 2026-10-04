@@ -25,7 +25,7 @@
     <div class="rv">
       <div class="eyebrow">Skripsi Sains Data, Politeknik Statistika STIS</div>
       <h1>Menilai kerusakan <em>setiap petak</em> lahan pertanian dari citra satelit</h1>
-      <p class="lead">Mask R-CNN membentuk poligon petak, Random Forest menilai kerusakannya. Studi kasus gempa, tsunami, dan likuifaksi Palu 2018.</p>
+      <p class="lead">Mask R-CNN membentuk segmen petak, Random Forest menilai kerusakannya. Studi kasus gempa, tsunami, dan likuifaksi Palu 2018.</p>
       <div class="btn-row">
         <a class="btn" href="demo.html">Lihat demo galeri <i class="ph ph-arrow-right" aria-hidden="true"></i></a>
         <a class="btn ghost" href="unggah.html">Coba citra sendiri</a>
@@ -88,10 +88,10 @@
   <div class="wrap">
     <div class="head rv">
       <h2>Dari sepasang citra menjadi peta kerusakan per petak</h2>
-      <p class="muted">Satu alur <em>end-to-end</em> yang berjalan tanpa <em>ground truth</em>, sehingga dapat dipakai pada citra baru.</p>
+      <p class="muted">Satu model Mask R-CNN–RF yang berjalan tanpa <em>ground truth</em>, sehingga dapat dipakai pada citra baru.</p>
     </div>
     <div class="flow">
-      <div class="step rv"><div class="ic"><i class="ph ph-polygon" aria-hidden="true"></i></div><div class="who">Tujuan 1, deep learning</div><h3>Bentuk poligon petak</h3><p>Mask R-CNN mendeteksi setiap petak lahan pada citra sebelum bencana.</p></div>
+      <div class="step rv"><div class="ic"><i class="ph ph-polygon" aria-hidden="true"></i></div><div class="who">Tujuan 1, deep learning</div><h3>Segmentasi petak</h3><p>Mask R-CNN mendeteksi setiap petak lahan pada citra sebelum bencana.</p></div>
       <div class="step rv"><div class="ic"><i class="ph ph-stack" aria-hidden="true"></i></div><div class="who">Rekayasa fitur</div><h3>Ukur enam jenis perubahan</h3><p>Batas lahan, material asing, tanaman, radiometri, genangan, dan perubahan semantik (SAC).</p></div>
       <div class="step rv"><div class="ic"><i class="ph ph-tree-structure" aria-hidden="true"></i></div><div class="who">Tujuan 2, machine learning</div><h3>Klasifikasi kerusakan</h3><p>Random Forest menilai setiap petak ke dalam tiga kelas kerusakan.</p></div>
       <div class="step rv"><div class="ic"><i class="ph ph-map-trifold" aria-hidden="true"></i></div><div class="who">Tujuan 3 dan <em>deployment</em></div><h3>Luas per kelas</h3><p>Luas lahan per tingkat kerusakan dihitung dan ditampilkan dalam aplikasi web.</p></div>
@@ -133,12 +133,12 @@
   /* ringkasan hasil: angka dari data resmi */
   const t2 = D.t2, t3 = D.t3, i = (arr, lbl) => arr[t2.label.indexOf(lbl)];
   document.getElementById("ringkas").innerHTML = `
-    <div class="big"><picture><source srcset="assets/img/tile_00000195_overlay_crop.webp" type="image/webp"><img src="assets/img/tile_00000195_overlay_crop.jpg" alt="Hasil pipeline end-to-end pada tile 00000195" loading="lazy"></picture>
-      <div class="in-txt"><div class="who">Pipeline <em>end-to-end</em></div><div class="num">${fmt(t3.deteksi.f1_lokalisasi)}</div>
+    <div class="big"><picture><source srcset="assets/img/tile_00000195_overlay_crop.webp" type="image/webp"><img src="assets/img/tile_00000195_overlay_crop.jpg" alt="Hasil model Mask R-CNN–RF pada tile 00000195" loading="lazy"></picture>
+      <div class="in-txt"><div class="who">Model Mask R-CNN–RF</div><div class="num">${fmt(t3.deteksi.f1_lokalisasi)}</div>
       <p class="lbl">F1_lokalisasi pada 604 petak uji; Skor gabungan xView2 ${fmt(t3.xview2)}.</p></div></div>
-    <div><div class="who">Mask R-CNN</div><div class="num">${fmt(D.t1.mrcnn[2])}</div><p class="lbl">F1 tingkat instans pembentukan poligon (YOLOv8-seg: ${fmt(D.t1.yolo[2])}).</p></div>
-    <div><div class="who">Random Forest</div><div class="num">${fmt(i(t2.rf, "Kappa kuadratik"))}</div><p class="lbl">Kappa berbobot kuadratik klasifikasi kerusakan (LightGBM: ${fmt(i(t2.lgbm, "Kappa kuadratik"))}).</p></div>
-    <div class="wide"><div><div class="who">Aplikasi web</div><div class="num" style="margin:0">526/526</div></div><p class="lbl">poligon keluaran aplikasi identik dengan hasil resmi pada jalur GeoTIFF (FP32).</p></div>`;
+    <div><div class="who">Mask R-CNN</div><div class="num">${fmt(D.t1.mrcnn[2])}</div><p class="lbl">F1 tingkat instans segmentasi (YOLOv8-seg: ${fmt(D.t1.yolo[2])}).</p></div>
+    <div><div class="who">Random Forest</div><div class="num">${fmt(i(t2.rf, "Kappa kuadratik"))}</div><p class="lbl">Kappa tertimbang kuadratik klasifikasi kerusakan (LightGBM: ${fmt(i(t2.lgbm, "Kappa kuadratik"))}).</p></div>
+    <div class="wide"><div><div class="who">Aplikasi web</div><div class="num" style="margin:0">526/526</div></div><p class="lbl">segmen keluaran aplikasi identik dengan hasil resmi pada jalur GeoTIFF (FP32).</p></div>`;
 
   /* donat distribusi kelas */
   let ch;
@@ -151,7 +151,7 @@
       data: { labels: lab, datasets: [{ data: nilai, backgroundColor: [w.none, w.mid, w.sev], borderColor: getComputedStyle(document.querySelector(".card")).backgroundColor, borderWidth: 3 }] },
       options: { maintainAspectRatio: false, cutout: "64%", animation: matchMedia("(prefers-reduced-motion: reduce)").matches ? false : undefined, plugins: {
         legend: { position: "bottom", labels: { color: w.ink, boxWidth: 12, padding: 16, font: { family: w.font } } },
-        tooltip: { callbacks: { label: (c) => ` ${c.label}: ${c.raw.toLocaleString("id-ID")} poligon` } } } }
+        tooltip: { callbacks: { label: (c) => ` ${c.label}: ${c.raw.toLocaleString("id-ID")} segmen` } } } }
     });
   };
   gambar(); document.addEventListener("tema", gambar);

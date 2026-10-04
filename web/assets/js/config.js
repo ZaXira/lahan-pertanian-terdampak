@@ -14,6 +14,10 @@ window.CONFIG = {
   datasetUrl: "https://huggingface.co/datasets/ZaXira/palu-tsunami-lahan-pertanian",
   datasetFile: (tile, fase) =>
     `https://huggingface.co/datasets/ZaXira/palu-tsunami-lahan-pertanian/resolve/main/tif/palu-tsunami_${tile}_${fase}_disaster.tif`,
+  // Login "Masuk dengan Hugging Face" (OAuth app di huggingface.co/settings/applications).
+  // Kosong = tombol login disembunyikan.
+  hfOauthClientId: "fd0a6d91-3022-483b-972b-71ef0c74494b",
+  hfOauthScopes: "openid profile inference-api",
   githubUrl: "https://github.com/ZaXira/lahan-pertanian-terdampak",
   resolusiPalu: 0.4984
 };

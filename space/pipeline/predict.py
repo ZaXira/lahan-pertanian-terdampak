@@ -154,7 +154,7 @@ def format_log(log):
     if log.get("ukuran"):
         lines.append(f"Ukuran citra: {log['ukuran']}")
     if log.get("n_poligon") is not None:
-        lines.append(f"Poligon lahan terdeteksi: {log['n_poligon']}")
+        lines.append(f"Segmen lahan terdeteksi: {log['n_poligon']}")
         if log["n_poligon"] == 0:
             lines.append("  (tidak ada lahan pertanian terdeteksi -> tahap 2-3 dilewati)")
     lines.append("Waktu proses:")

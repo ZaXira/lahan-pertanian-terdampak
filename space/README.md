@@ -22,7 +22,7 @@ Pembimbing: Dr. Eng. Arie Wahyu Wijayanto, S.S.T., M.T.
 - Situs penelitian: https://lahan-terdampak-palu.vercel.app
 - Contoh citra GeoTIFF (4 tile uji): https://huggingface.co/datasets/ZaXira/palu-tsunami-lahan-pertanian
 
-Aplikasi ini menjalankan pipeline Tujuan 3 secara interaktif dengan bobot final penelitian (tanpa pelatihan
+Aplikasi ini menjalankan model Mask R-CNN–RF (Tujuan 3) secara interaktif dengan bobot final penelitian (tanpa pelatihan
 ulang): Mask R-CNN mendeteksi petak lahan pada citra sebelum bencana, enam layer fitur mengukur perubahan
 sebelum–sesudah, lalu Random Forest menilai kerusakan ke dalam tiga kelas dan luas per kelas dihitung.
 
@@ -40,7 +40,7 @@ overlay, tabel, log = c.predict(handle_file("pre.tif"), handle_file("post.tif"),
 ## Catatan
 
 - Logika pemrosesan identik dengan versi yang divalidasi: jalur GeoTIFF mereproduksi hasil resmi penelitian
-  (526/526 poligon identik). JPG/PNG 8-bit menggeser sebagian prediksi; gunakan skala min–max gabungan 3 band.
+  (526/526 segmen identik). JPG/PNG 8-bit menggeser sebagian prediksi; gunakan skala min–max gabungan 3 band.
 - Presisi dikunci ke FP32 (TF32 dimatikan) dan versi pustaka dikunci di `requirements.txt`.
 - Bobot model diunduh saat startup dari model repo yang ditunjuk variabel `HF_MODEL_REPO`.
 - Berjalan di ZeroGPU: kuota GPU harian terbatas.

@@ -20,6 +20,7 @@
       <div class="eyebrow">Demo langsung dengan GPU di Hugging Face</div>
       <h1>Nilai kerusakan dari citra Anda sendiri</h1>
       <p class="lead">Unggah citra sebelum dan sesudah bencana pada lokasi yang sama. Model penelitian berjalan di Hugging Face Spaces (ZeroGPU).</p>
+      <div class="btn-row"><a class="btn ghost" id="keSpace" href="https://huggingface.co/spaces/ZaXira/lahan-pertanian-terdampak" target="_blank" rel="noopener"><i class="ph ph-arrow-square-out" aria-hidden="true"></i>Buka aplikasi di Hugging Face</a></div>
     </div>
   </div>
 </section>
@@ -43,6 +44,7 @@
       <span class="small muted" id="catatanProses">Satu pasang citra 1024×1024 butuh sekitar 20 sampai 60 detik, ditambah waktu antre GPU.</span>
     </div>
 
+    <div id="akun" class="small" style="display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;margin:-8px 0 20px"></div>
     <div id="status" aria-live="polite"></div>
     <div id="hasil" class="demo-grid" style="margin-top:18px"></div>
   </div>
@@ -56,6 +58,37 @@ import { Client, handle_file } from "https://cdn.jsdelivr.net/npm/@gradio/client
 
 const C = window.CONFIG, $ = (id) => document.getElementById(id);
 const masukan = { pre: null, post: null };     // File atau URL string
+let contohAktif = null;                         // tile contoh yang sedang dipilih (null = unggahan sendiri)
+
+/* ---------- login Hugging Face (OAuth): GPU memakai kuota akun pengunjung ---------- */
+let sesi = null;
+try {
+  sesi = JSON.parse(sessionStorage.getItem("hfSesi") || "null");
+  if (sesi && new Date(sesi.kedaluwarsa) <= new Date()) { sesi = null; sessionStorage.removeItem("hfSesi"); }
+} catch { sesi = null; }
+async function hubHf() { return import("https://cdn.jsdelivr.net/npm/@huggingface/hub@2.17.5/+esm"); }
+if (C.hfOauthClientId && new URLSearchParams(location.search).has("code")) {
+  try {
+    const { oauthHandleRedirectIfPresent } = await hubHf();
+    const r = await oauthHandleRedirectIfPresent();
+    if (r) {
+      sesi = { token: r.accessToken, kedaluwarsa: r.accessTokenExpiresAt, nama: r.userInfo?.preferred_username || r.userInfo?.name || "akun Anda" };
+      try { sessionStorage.setItem("hfSesi", JSON.stringify(sesi)); } catch {}
+    }
+  } catch (e) { console.warn("Login Hugging Face gagal:", e); }
+  history.replaceState(null, "", location.pathname);
+}
+function tampilAkun() {
+  if (!C.hfOauthClientId) { $("akun").innerHTML = ""; return; }
+  $("akun").innerHTML = sesi
+    ? `<span><i class="ph ph-user-circle" aria-hidden="true"></i> Masuk sebagai <b>${String(sesi.nama).replace(/[<>]/g, "")}</b>. GPU memakai kuota akun Hugging Face Anda.</span><button class="btn ghost sm" id="keluar">Keluar</button>`
+    : `<button class="btn ghost sm" id="masuk"><i class="ph ph-sign-in" aria-hidden="true"></i>Masuk dengan Hugging Face</button><span class="muted">Opsional. Pengunjung tanpa login mendapat kuota GPU harian paling kecil; dengan login, pemrosesan memakai kuota akun Anda sendiri.</span>`;
+  $("masuk")?.addEventListener("click", async () => {
+    const { oauthLoginUrl } = await hubHf();
+    location.href = await oauthLoginUrl({ clientId: C.hfOauthClientId, scopes: C.hfOauthScopes, redirectUrl: location.origin + location.pathname });
+  });
+  $("keluar")?.addEventListener("click", () => { sesi = null; klien = null; try { sessionStorage.removeItem("hfSesi"); } catch {} tampilAkun(); });
+}
 const KELAS = { "Tidak Terdampak": "none", "Terdampak Sedang": "mid", "Terdampak Berat": "sev" };
 
 /* ---------- pratinjau ---------- */
@@ -73,7 +106,7 @@ function pratinjau(fase, sumber, labelUrl) {
   $("proses").disabled = !(masukan.pre && masukan.post);
 }
 for (const [fase, id, dz] of [["pre", "fPre", "dPre"], ["post", "fPost", "dPost"]]) {
-  $(id).addEventListener("change", (e) => { masukan[fase] = e.target.files[0] || null; pratinjau(fase, masukan[fase]); });
+  $(id).addEventListener("change", (e) => { contohAktif = null; masukan[fase] = e.target.files[0] || null; pratinjau(fase, masukan[fase]); });
   const d = $(dz);
   ["dragenter", "dragover"].forEach((ev) => d.addEventListener(ev, () => d.classList.add("over")));
   ["dragleave", "drop"].forEach((ev) => d.addEventListener(ev, () => d.classList.remove("over")));
@@ -83,6 +116,7 @@ for (const [fase, id, dz] of [["pre", "fPre", "dPre"], ["post", "fPost", "dPost"
 const TILES = window.DATA.galeri.map((g) => g.tile);
 $("contoh").innerHTML = TILES.map((t) => `<button class="btn ghost sm" data-t="${t}">Tile ${t}</button>`).join("");
 function pakaiContoh(t) {
+  contohAktif = t;
   masukan.pre = C.datasetFile(t, "pre"); masukan.post = C.datasetFile(t, "post");
   pratinjau("pre", masukan.pre, `assets/img/tile_${t}_pre.jpg`);
   pratinjau("post", masukan.post, `assets/img/tile_${t}_post.jpg`);
@@ -100,10 +134,14 @@ const status = (html, mode = true) => {
 };
 const SKELETON = `<div class="skel img" aria-hidden="true"></div>
   <div class="skel-rows" aria-hidden="true"><div class="skel row"></div><div class="skel row"></div><div class="skel row"></div><div class="skel row"></div></div>`;
+const GALAT_SEMENTARA = /parse server response|Connection errored|Failed to fetch|NetworkError|Load failed|\b50[234]\b/i;
 function pesanGalat(err) {
   const t = String(err?.message || err || "");
+  if (GALAT_SEMENTARA.test(t)) return `Server Hugging Face sedang tidak stabil dan tidak merespons setelah beberapa kali percobaan. Coba tekan Proses lagi sebentar lagi, atau buka <a href="${C.spaceUrl}" target="_blank" rel="noopener">aplikasi di Hugging Face</a>.`;
   if (/No GPU was available|queue/i.test(t)) return `GPU di ZeroGPU sedang penuh (pengunjung tanpa akun Hugging Face mendapat prioritas antrean terendah). Coba lagi beberapa menit lagi, atau buka <a href="${C.spaceUrl}" target="_blank" rel="noopener">aplikasi di Hugging Face</a> dalam keadaan login. Tanpa GPU, Anda tetap dapat melihat <a href="demo.html">demo galeri</a>.`;
-  if (/quota|exceeded/i.test(t)) return `Kuota GPU harian untuk pengunjung sudah habis. Coba lagi nanti, buka <a href="${C.spaceUrl}" target="_blank" rel="noopener">aplikasi di Hugging Face</a> dalam keadaan login, atau lihat <a href="demo.html">demo galeri</a> yang tidak memerlukan GPU.`;
+  if (/quota|exceeded/i.test(t)) return sesi
+    ? `Kuota GPU harian akun Hugging Face Anda sudah habis. Coba lagi besok, pakai tombol contoh tile (hasil tersimpan, tanpa GPU), atau lihat <a href="demo.html">demo galeri</a>.`
+    : `Kuota GPU harian untuk pengunjung tanpa login sudah habis. ${C.hfOauthClientId ? "Tekan <b>Masuk dengan Hugging Face</b> di atas agar memakai kuota akun Anda sendiri, " : `Buka <a href="${C.spaceUrl}" target="_blank" rel="noopener">aplikasi di Hugging Face</a> dalam keadaan login, `}pakai tombol contoh tile (hasil tersimpan, tanpa GPU), atau lihat <a href="demo.html">demo galeri</a>.`;
   if (/sleep|building|starting|not.*running/i.test(t)) return "Aplikasi sedang dinyalakan ulang. Tunggu 1 sampai 2 menit lalu coba lagi.";
   return `Proses gagal: ${t.replace(/[<>]/g, "") || "kesalahan tidak diketahui"}. Anda juga dapat mencoba langsung di <a href="${C.spaceUrl}" target="_blank" rel="noopener">aplikasi Hugging Face</a>.`;
 }
@@ -117,22 +155,54 @@ function tabelHasil(df) {
     if (j === iK) return `<td class="l">${KELAS[c] ? `<span class="dot ${KELAS[c]}"></span> ` : ""}${c}</td>`;
     return `<td>${typeof c === "number" ? c.toLocaleString("id-ID", { maximumFractionDigits: 4 }) : c}</td>`;
   }).join("") + "</tr>").join("");
-  return `<div class="table-wrap"><table class="data"><caption>Jumlah poligon dan luas per kelas</caption><thead><tr>${headers.map((h) => `<th>${h}</th>`).join("")}</tr></thead><tbody>${rows}</tbody></table></div>`;
+  return `<div class="table-wrap"><table class="data"><caption>Jumlah segmen dan luas per kelas</caption><thead><tr>${headers.map((h) => LABEL_KOLOM[h] || h).map((h) => `<th>${h}</th>`).join("")}</tr></thead><tbody>${rows}</tbody></table></div>`;
 }
 
 let klien = null;
-$("proses").addEventListener("click", async () => {
+async function sambung() {
+  for (let coba = 1; ; coba++) {
+    try { return await Client.connect(C.spaceId, { events: ["data", "status", "log"], ...(sesi ? { token: sesi.token } : {}) }); }
+    catch (e) { if (coba >= 3) throw e; await new Promise((r) => setTimeout(r, 1500 * coba)); }
+  }
+}
+
+const LABEL_KOLOM = { "Jumlah Poligon": "Jumlah Segmen" };
+
+/* ---------- cara 1: hasil tersimpan untuk tile contoh (tanpa GPU) ---------- */
+function tampilkanTersimpan(t) {
+  const g = window.DATA.galeri.find((x) => x.tile === t);
+  const headers = Object.keys(g.luas[0]);
+  const df = { headers, data: g.luas.map((r) => headers.map((h) => (r[h] !== "" && !isNaN(Number(r[h])) ? Number(r[h]) : r[h]))) };
+  const log = `Hasil tersimpan (tanpa GPU)\nTile        : ${t}\nSumber      : aplikasi web, jalur GeoTIFF, dijalankan di Kaggle GPU T4 (FP32)\nKesetaraan  : identik dengan hasil resmi Tujuan 3 (${g.resmi.n_pred} segmen)`;
+  tampilkan([{ url: `assets/img/tile_${t}_overlay.jpg` }, df, log], null);
+  status(`Menampilkan <b>hasil tersimpan</b> tile ${t} tanpa GPU. Hasil ini keluaran aplikasi yang sama dan identik dengan hasil resmi penelitian. <button class="btn ghost sm" id="ulangGpu" style="margin-left:6px"><i class="ph ph-cpu" aria-hidden="true"></i>Jalankan ulang langsung di GPU</button>`, false);
+  $("ulangGpu").addEventListener("click", () => prosesGpu());
+}
+
+$("proses").addEventListener("click", () => (contohAktif ? tampilkanTersimpan(contohAktif) : prosesGpu()));
+
+async function prosesGpu() {
   $("proses").disabled = true; $("hasil").innerHTML = SKELETON;
   const mulai = performance.now();
   try {
     status("Menghubungkan ke aplikasi di Hugging Face…");
-    klien = klien || await Client.connect(C.spaceId, { events: ["data", "status", "log"] });
+    klien = klien || await sambung();
     let hasil = null;
-    try { hasil = await jalankan(); }
-    catch (e) {
-      if (!/No GPU was available/i.test(String(e?.message || e))) throw e;
-      status("GPU sedang penuh. Mencoba sekali lagi…");
-      hasil = await jalankan();
+    // Proxy Hugging Face sesekali membalas HTML 502 ("Could not parse server response"):
+    // galat sementara, cukup diulang. GPU penuh diulang sekali.
+    for (let coba = 1, gpuPenuh = 0; ; coba++) {
+      try { hasil = await jalankan(); break; }
+      catch (e) {
+        const t = String(e?.message || e);
+        if (GALAT_SEMENTARA.test(t) && coba < 4) {
+          status(`Koneksi ke Hugging Face terputus sesaat. Mencoba lagi (${coba}/3)…`);
+          await new Promise((r) => setTimeout(r, 1500 * coba));
+          klien = await sambung();
+          continue;
+        }
+        if (/No GPU was available/i.test(t) && !gpuPenuh++) { status("GPU sedang penuh. Mencoba sekali lagi…"); continue; }
+        throw e;
+      }
     }
     if (!hasil) throw new Error("tidak ada keluaran");
     tampilkan(hasil, mulai);
@@ -143,7 +213,8 @@ $("proses").addEventListener("click", async () => {
   } finally {
     $("proses").disabled = !(masukan.pre && masukan.post);
   }
-});
+}
+tampilAkun();
 
 async function jalankan() {
     const berkas = (x) => handle_file(x);
@@ -175,7 +246,7 @@ function tampilkan(hasil, mulai) {
         <div class="legend"><span><i class="dot none"></i>Tidak Terdampak</span><span><i class="dot mid"></i>Terdampak Sedang</span><span><i class="dot sev"></i>Terdampak Berat</span></div>` : ""}</div>
       <div class="grid" style="gap:14px">${tabelHasil(tabel)}
         <details class="card small"><summary><b>Log proses</b></summary><pre class="log" style="margin-top:10px">${String(log || "").replace(/[<>]/g, "")}</pre></details>
-        <div class="callout small">Hasil bersifat indikatif: kelas Terdampak Berat paling andal, sedangkan Terdampak Sedang dan poligon kecil perlu diperiksa ulang. Aplikasi tidak dapat mengenali <em>false positive</em> karena tidak ada ground truth.</div></div>`;
+        <div class="callout small">Hasil bersifat indikatif: kelas Terdampak Berat paling andal, sedangkan Terdampak Sedang dan segmen kecil perlu diperiksa ulang. Aplikasi tidak dapat mengenali <em>false positive</em> karena tidak ada ground truth.</div></div>`;
 }
 </script>
 </body>

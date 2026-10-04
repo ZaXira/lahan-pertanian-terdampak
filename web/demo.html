@@ -53,9 +53,10 @@
         </div>
         <div id="hasil" class="stack" aria-live="polite"></div>
         <div class="small" style="padding:4px 4px 0">
-          <b>Unduh pasangan citra GeoTIFF tile ini</b>
-          <p class="muted" style="margin:.3em 0 .7em">Citra 32-bit hasil georeferensi ulang (EPSG:32751, 0,4984 m/piksel), siap diunggah ke aplikasi.</p>
-          <div class="btn-row"><a class="btn ghost sm" id="dlPre" href="#" rel="noopener"><i class="ph ph-download-simple" aria-hidden="true"></i>Citra sebelum</a><a class="btn ghost sm" id="dlPost" href="#" rel="noopener"><i class="ph ph-download-simple" aria-hidden="true"></i>Citra sesudah</a></div>
+          <b>Unduh pasangan citra tile ini</b>
+          <p class="muted" style="margin:.3em 0 .7em">GeoTIFF 32-bit (EPSG:32751, 0,4984 m/piksel) memberi hasil identik dengan penelitian. PNG/JPG 8-bit dikonversi dengan satu skala min-max gabungan; isi resolusi 0,4984 m/piksel secara manual.</p>
+          <div id="dlTile" class="stack" style="gap:8px"></div>
+          <p class="muted" style="margin:.8em 0 0">Keempat tile sekaligus (zip): <a id="zTif" href="#">GeoTIFF, 83 MB</a> · <a id="zPng" href="#">PNG, 10 MB</a> · <a id="zJpg" href="#">JPG, 2 MB</a></p>
         </div>
       </div>
     </div>
@@ -90,7 +91,12 @@
     $("judulTile").textContent = `Tile ${pilih}`;
     $("infoTile").textContent = `${g.resmi.n_gt} petak pada ground truth. Citra ${g.ukuran_pre[0]}×${g.ukuran_pre[1]} piksel (pratinjau).`;
     $("keUnggah").href = `unggah.html?tile=${pilih}`;
-    $("dlPre").href = C.datasetFile(pilih, "pre"); $("dlPost").href = C.datasetFile(pilih, "post");
+    const unduh = (fase, fmt) => `${C.datasetUrl}/resolve/main/${fmt}/palu-tsunami_${pilih}_${fase}_disaster.${fmt}?download=true`;
+    $("dlTile").innerHTML = [["pre", "Citra sebelum"], ["post", "Citra sesudah"]].map(([fase, lbl]) =>
+      `<div class="btn-row" style="margin:0;align-items:center"><span style="min-width:8.5em">${lbl}</span>` +
+      [["tif", "GeoTIFF"], ["png", "PNG"], ["jpg", "JPG"]].map(([fmt, nama]) =>
+        `<a class="btn ghost sm" href="${unduh(fase, fmt)}" rel="noopener"><i class="ph ph-download-simple" aria-hidden="true"></i>${nama}</a>`).join("") + "</div>").join("");
+    for (const f of ["tif", "png", "jpg"]) $("z" + f[0].toUpperCase() + f.slice(1)).href = `${C.datasetUrl}/resolve/main/unduh/palu-tsunami_4tile_${f}.zip?download=true`;
     $("hasil").innerHTML = "";
   }
   $("pick").addEventListener("click", (e) => { const b = e.target.closest(".tile-btn"); if (!b) return; pilih = b.dataset.t; kanan = "post"; setSeg(); tampil(); });
@@ -109,7 +115,7 @@
         return `<tr${total ? ' class="b"' : ""}><td class="l">${total ? "Total" : `<span class="dot ${KELAS[k]}"></span> ${k}`}</td><td>${Number(x["Jumlah Poligon"]).toLocaleString("id-ID")}</td><td>${fmt(nomor(x["Total Luas (ha)"]))}</td></tr>`;
       }).join("");
       $("hasil").innerHTML = `<div class="table-wrap"><table class="data"><caption>Hasil penilaian tile ${pilih}</caption>
-          <thead><tr><th>Kelas kerusakan</th><th>Jumlah poligon</th><th>Luas (ha)</th></tr></thead><tbody>${baris}</tbody></table>
+          <thead><tr><th>Kelas kerusakan</th><th>Jumlah segmen</th><th>Luas (ha)</th></tr></thead><tbody>${baris}</tbody></table>
           <p class="tnote">Luas dihitung dari jumlah piksel × 0,4984² m². Sumber: keluaran aplikasi pada jalur GeoTIFF (FP32).</p></div>
         <div class="callout small"><b>Dibandingkan dengan <em>ground truth</em> tile ini:</b>
           ${r.TP} dari ${r.n_gt} petak terdeteksi (<em>recall</em> ${fmt(+r.recall_lokalisasi)}), ${r.FP} prediksi tanpa pasangan, F1_lokalisasi ${fmt(+r.f1_lokalisasi)}, dan akurasi kelas pada pasangan terdeteksi ${fmt(+r.akurasi_klasifikasi_matched)}.</div>

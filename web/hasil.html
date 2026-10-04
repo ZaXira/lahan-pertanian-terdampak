@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#2f5d27">
 <title>Hasil | Lahan Terdampak</title>
-<meta name="description" content="Hasil penelitian: perbandingan YOLOv8-seg dan Mask R-CNN, Random Forest dan LightGBM, pipeline end-to-end, dan validasi aplikasi web.">
+<meta name="description" content="Hasil penelitian: perbandingan YOLOv8-seg dan Mask R-CNN, Random Forest dan LightGBM, model Mask R-CNN–RF, dan validasi aplikasi web.">
 <link rel="icon" href="assets/img/logo-stis.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700;1,800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -27,9 +27,9 @@
 <section style="padding-top:12px">
   <div class="wrap">
     <div class="tabs" role="tablist">
-      <button class="tab" role="tab" aria-selected="true" data-pane="p1"><small>Tujuan 1</small>Poligon</button>
+      <button class="tab" role="tab" aria-selected="true" data-pane="p1"><small>Tujuan 1</small>Segmentasi</button>
       <button class="tab" role="tab" aria-selected="false" data-pane="p2"><small>Tujuan 2</small>Klasifikasi</button>
-      <button class="tab" role="tab" aria-selected="false" data-pane="p3"><small>Tujuan 3</small>End-to-end</button>
+      <button class="tab" role="tab" aria-selected="false" data-pane="p3"><small>Tujuan 3</small>Mask R-CNN–RF</button>
       <button class="tab" role="tab" aria-selected="false" data-pane="p4">Aplikasi web</button>
       <button class="tab" role="tab" aria-selected="false" data-pane="p5">Keterbatasan &amp; pemanfaatan</button>
     </div>
@@ -39,7 +39,7 @@
       <div class="grid g2" style="gap:24px;align-items:start">
         <div>
           <h2>Mask R-CNN terpilih</h2>
-          <p class="muted">Mask R-CNN unggul pada 6 dari 8 metrik. Keunggulannya terutama pada <em>precision</em>: jumlah petak yang ditemukan kedua model hampir sama, tetapi Mask R-CNN menghasilkan jauh lebih sedikit poligon keliru. Mask R-CNN juga tidak kolaps pada <em>fold</em> mana pun, sedangkan YOLOv8-seg kolaps pada <em>fold</em> 3 (berhenti pada <em>epoch</em> 16 dengan hasil terbaik pada <em>epoch</em> 1).</p>
+          <p class="muted">Mask R-CNN unggul pada 6 dari 8 metrik. Keunggulannya terutama pada <em>precision</em>: jumlah petak yang ditemukan kedua model hampir sama, tetapi Mask R-CNN menghasilkan jauh lebih sedikit segmen keliru. Mask R-CNN juga tidak gagal pada <em>fold</em> mana pun, sedangkan YOLOv8-seg gagal pada <em>fold</em> 3 (berhenti pada <em>epoch</em> 16 dengan hasil terbaik pada <em>epoch</em> 1).</p>
           <div class="callout small">Nilai pada grafik adalah rerata makro 4 tile. Secara gabungan, Mask R-CNN mendeteksi 322 dari 604 petak (53,3%) karena batas bawaan 100 deteksi per citra; batas ini dinaikkan menjadi 500 pada Tujuan 3.</div>
         </div>
         <div class="card"><div class="chart-box"><canvas id="c1" aria-label="Perbandingan YOLOv8-seg dan Mask R-CNN"></canvas></div></div>
@@ -53,7 +53,7 @@
       <div class="grid g2" style="gap:24px;align-items:start">
         <div>
           <h2>Random Forest terpilih</h2>
-          <p class="muted">Kappa berbobot kuadratik Random Forest lebih tinggi karena lebih jarang melakukan kesalahan berjarak dua tingkat, misalnya menilai lahan utuh sebagai rusak berat. F1-<em>macro</em> kedua model nyaris setara.</p>
+          <p class="muted">Kappa tertimbang kuadratik Random Forest lebih tinggi karena lebih jarang melakukan kesalahan berjarak dua tingkat, misalnya menilai lahan utuh sebagai rusak berat. F1-<em>macro</em> kedua model nyaris setara.</p>
           <div class="callout warn small">Kelas Terdampak Sedang praktis tidak dikenali (F1 0,0545). Proporsinya turun dari 9,8% pada data latih menjadi 5,0% pada data uji, dan luas median petaknya pada data uji 8,58 kali data latih.</div>
         </div>
         <div class="card"><div class="chart-box"><canvas id="c2" aria-label="Perbandingan Random Forest dan LightGBM"></canvas></div></div>
@@ -70,8 +70,8 @@
       <div class="metrics" id="kartu3"></div>
       <div class="grid g2" style="gap:24px;margin-top:24px;align-items:start">
         <div>
-          <h2>Kinerja pipeline per tile</h2>
-          <p class="muted">Setelah batas deteksi dinaikkan, 66,1% petak uji terdeteksi. Ketidaksempurnaan geometri deteksi hanya menurunkan F1-<em>macro</em> klasifikasi sebesar 0,0182 (skenario <em>oracle</em>), sehingga keterbatasan utama tetap pada kelas Terdampak Sedang dan cakupan deteksi petak kecil.</p>
+          <h2>Kinerja model Mask R-CNN–RF per tile</h2>
+          <p class="muted">Setelah batas deteksi dinaikkan, 66,1% petak uji terdeteksi. Ketidaksempurnaan geometri deteksi hanya menurunkan F1-<em>macro</em> klasifikasi sebesar 0,0182 (model pembanding), sehingga keterbatasan utama tetap pada kelas Terdampak Sedang dan cakupan deteksi petak kecil.</p>
           <div class="callout small">Skor gabungan xView2 rendah terutama karena rerata harmonik F1 kerusakan didominasi kelas Terdampak Sedang; rerata aritmetiknya (F1-<em>macro</em>) 0,4720.</div>
         </div>
         <div class="card"><div class="chart-box"><canvas id="c4" aria-label="Kinerja per tile"></canvas></div></div>
@@ -88,7 +88,7 @@
     <!-- Aplikasi web -->
     <div class="pane" id="p4" hidden>
       <h2>Aplikasi mereproduksi hasil penelitian</h2>
-      <p class="muted">Pada jalur GeoTIFF dengan presisi FP32, seluruh 526 poligon keluaran aplikasi identik dengan hasil resmi. Kesetaraan ini bergantung pada cara penyiapan citra dan pengaturan presisi GPU.</p>
+      <p class="muted">Pada jalur GeoTIFF dengan presisi FP32, seluruh 526 segmen keluaran aplikasi identik dengan hasil resmi. Kesetaraan ini bergantung pada cara penyiapan citra dan pengaturan presisi GPU.</p>
       <div data-tabel="T4.4.c"></div>
       <div class="grid g2" style="gap:18px;margin-top:18px;align-items:start">
         <div data-tabel="T4.4.d"></div>
@@ -137,7 +137,7 @@
       return [new Chart(c4, { type: "bar", data: { labels: pt.map((r) => r.tile_id.padStart(8, "0")), datasets: [
         { label: "F1 lokalisasi", data: pt.map((r) => +r.f1_lokalisasi), backgroundColor: w.accent },
         { label: "Recall lokalisasi", data: pt.map((r) => +r.recall_lokalisasi), backgroundColor: w.s3 },
-        { label: "Akurasi klasifikasi (matched)", data: pt.map((r) => +r.akurasi_klasifikasi_matched), backgroundColor: w.s2 }] },
+        { label: "Akurasi model Mask R-CNN–RF", data: pt.map((r) => +r.akurasi_klasifikasi_matched), backgroundColor: w.s2 }] },
         options: { ...dasar(w), scales: { ...dasar(w).scales, y: { ...dasar(w).scales.y, max: 1 } } } })];
     }
   };
@@ -150,7 +150,7 @@
   const d = D.t3.deteksi;
   document.getElementById("kartu3").innerHTML = [
     ["F1_lokalisasi", fmt(d.f1_lokalisasi), `<em>precision</em> ${fmt(d.precision)}, <em>recall</em> ${fmt(d.recall)}`, "acc"],
-    ["F1-<em>macro matched-only</em>", fmt(D.t3.macro_f1), `${d.TP} pasangan yang terdeteksi`, ""],
+    ["F1-<em>macro</em> Mask R-CNN–RF", fmt(D.t3.macro_f1), `${d.TP} pasangan yang terdeteksi`, ""],
     ["Skor gabungan xView2", fmt(D.t3.xview2), `0,3 × F1_lokalisasi + 0,7 × F1 kerusakan (${fmt(D.t3.hm)})`, ""],
     ["mIoU piksel", fmt(D.t3.miou.rata_rata), "termasuk kelas latar belakang", ""]
   ].map(([a, n, l, c]) => `<div><div class="who">${a}</div><div class="num ${c}">${n}</div><p>${l}</p></div>`).join("");

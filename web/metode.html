@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#2f5d27">
 <title>Metode | Lahan Terdampak</title>
-<meta name="description" content="Metode penelitian: CRISP-DM, Mask R-CNN, enam layer fitur perubahan, Random Forest, dan evaluasi end-to-end.">
+<meta name="description" content="Metode penelitian: CRISP-DM, Mask R-CNN, enam layer fitur perubahan, Random Forest, dan evaluasi model Mask R-CNN–RF.">
 <link rel="icon" href="assets/img/logo-stis.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700;1,800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -19,7 +19,7 @@
     <div class="rv">
       <div class="eyebrow">Metode penelitian</div>
       <h1>Tiga tujuan, satu alur kerja CRISP-DM</h1>
-      <p class="lead">Setiap tujuan membandingkan dua model pada data dan protokol yang sama. Model terbaik digabungkan menjadi <em>pipeline end-to-end</em> dan diwujudkan sebagai aplikasi web.</p>
+      <p class="lead">Setiap tujuan membandingkan dua model pada data dan protokol yang sama. Model terbaik digabungkan menjadi model Mask R-CNN–RF dan diwujudkan sebagai aplikasi web.</p>
     </div>
   </div>
 </section>
@@ -35,7 +35,7 @@
       <div class="rv"><h3><i class="ph ph-magnifying-glass" aria-hidden="true"></i>Data Understanding</h3><p>Subset palu-tsunami xBD: 190 pasang tile dari tiga sensor, dengan citra sebelum bencana dari 2016-2018.</p></div>
       <div class="rv"><h3><i class="ph ph-pencil-ruler" aria-hidden="true"></i>Data Preparation</h3><p>Georeferensi ulang ke UTM 51S, seleksi 18 tile, digitasi 3.271 petak, pelabelan, dan konstruksi enam fitur perubahan.</p></div>
       <div class="rv"><h3><i class="ph ph-cpu" aria-hidden="true"></i>Modeling</h3><p>YOLOv8-seg vs Mask R-CNN (Tujuan 1), Random Forest vs LightGBM (Tujuan 2), dan integrasi <em>end-to-end</em> (Tujuan 3).</p></div>
-      <div class="rv"><h3><i class="ph ph-chart-bar" aria-hidden="true"></i>Evaluation</h3><p>Metrik piksel dan instans, F1-<em>macro</em>, Kappa berbobot kuadratik, Skor gabungan xView2, mIoU, dan skenario <em>oracle</em>.</p></div>
+      <div class="rv"><h3><i class="ph ph-chart-bar" aria-hidden="true"></i>Evaluation</h3><p>Metrik piksel dan instans, F1-<em>macro</em>, Kappa tertimbang kuadratik, Skor gabungan xView2, mIoU, dan model pembanding.</p></div>
       <div class="rv"><h3><i class="ph ph-globe-simple" aria-hidden="true"></i>Deployment</h3><p>Aplikasi web Gradio di Hugging Face Spaces yang divalidasi terhadap hasil resmi.</p></div>
     </div>
   </div>
@@ -76,7 +76,7 @@
   <div class="wrap grid g2" style="gap:56px;align-items:start">
     <div class="rv">
       <h2>Tile utuh sebagai blok spasial</h2>
-      <p class="muted">Empat tile disisihkan utuh sebagai data uji, sehingga model selalu dinilai pada lokasi yang tidak pernah dilihatnya. Empat belas tile sisanya dibagi ke 4 <em>fold</em> dengan algoritme Longest Processing Time agar jumlah poligon per <em>fold</em> seimbang.</p>
+      <p class="muted">Empat tile disisihkan utuh sebagai data uji, sehingga model selalu dinilai pada lokasi yang tidak pernah dilihatnya. Empat belas tile sisanya dibagi ke 4 <em>fold</em> dengan algoritme Longest Processing Time agar jumlah segmen per <em>fold</em> seimbang.</p>
       <div class="callout small">Pilihan ini membuat komposisi kelas dan ukuran petak di data uji berbeda dari data latih (<em>label shift</em> dan pergeseran kovariat pada peubah ukuran objek). Angka kinerja menjadi pendugaan yang jujur untuk lokasi baru, bukan angka optimistis dari pembagian acak.</div>
     </div>
     <div class="rv">
@@ -84,10 +84,10 @@
       <div class="table-wrap"><table class="data">
         <thead><tr><th>Tahap</th><th>Metrik utama</th></tr></thead>
         <tbody>
-          <tr><td>Tujuan 1: pembentukan poligon</td><td class="l"><em>Precision</em>, <em>recall</em>, F1, dan IoU tingkat piksel dan instans (pencocokan Hungarian, IoU ≥ 0,5)</td></tr>
-          <tr><td>Tujuan 2: klasifikasi</td><td class="l">F1-<em>macro</em> dan Cohen's Kappa berbobot kuadratik</td></tr>
-          <tr><td>Tujuan 3: <em>end-to-end</em></td><td class="l">F1_lokalisasi, F1 per kelas (<em>matched-only</em>), Skor gabungan xView2, dan mIoU</td></tr>
-          <tr><td>Aplikasi web</td><td class="l">Kesetaraan poligon, fitur, dan kelas terhadap hasil resmi</td></tr>
+          <tr><td>Tujuan 1: segmentasi</td><td class="l"><em>Precision</em>, <em>recall</em>, F1, dan IoU tingkat piksel dan instans (pencocokan Hungarian, IoU ≥ 0,5)</td></tr>
+          <tr><td>Tujuan 2: klasifikasi</td><td class="l">F1-<em>macro</em> dan Cohen's Kappa tertimbang kuadratik</td></tr>
+          <tr><td>Tujuan 3: model Mask R-CNN–RF</td><td class="l">F1_lokalisasi, F1 Mask R-CNN–RF, Skor gabungan xView2, dan mIoU</td></tr>
+          <tr><td>Aplikasi web</td><td class="l">Kesetaraan segmen, fitur, dan kelas terhadap hasil resmi</td></tr>
         </tbody></table></div>
     </div>
   </div>

@@ -90,7 +90,7 @@ def render_overlay(img_post_rgb, gdf_pred, alpha=FILL_ALPHA, linewidth=1.2):
         if legend is not None:
             legend.remove()
         legend = fig.legend(handles=handles, loc="lower center", ncol=ncol, fontsize=fontsize,
-                            title="Kelas kerusakan (jumlah poligon)", title_fontsize=fontsize,
+                            title="Kelas kerusakan (jumlah segmen)", title_fontsize=fontsize,
                             frameon=False)
         bbox = legend.get_window_extent(renderer)
         if bbox.width <= batas_px:

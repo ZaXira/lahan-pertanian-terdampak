@@ -34,7 +34,7 @@ try:
 except ImportError:
     print("rasterio tidak terpasang — pemeriksaan metadata dilewati")
 
-(DS / "README.md").write_text("""---
+if not (DS / "README.md").exists(): (DS / "README.md").write_text("""---
 license: cc-by-nc-sa-4.0
 pretty_name: Contoh Citra Lahan Pertanian Terdampak Tsunami Palu 2018
 task_categories:

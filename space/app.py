@@ -36,6 +36,25 @@ JUDUL = "Penilaian Kerusakan Lahan Pertanian Terdampak Bencana"
 SITUS = os.environ.get("SITUS_URL", "https://lahan-terdampak-palu.vercel.app")
 DATASET = "https://huggingface.co/datasets/ZaXira/palu-tsunami-lahan-pertanian"
 TABEL_KOSONG = pd.DataFrame(columns=[COL_KELAS, COL_JUMLAH, COL_LUAS])
+TILE_CONTOH = ["00000163", "00000169", "00000184", "00000195"]
+
+
+def _siapkan_contoh():
+    """Unduh 4 pasang GeoTIFF tile uji dari dataset ke folder aplikasi (untuk gr.Examples).
+    Gagal unduh tidak boleh menghentikan aplikasi: contoh cukup tidak ditampilkan."""
+    try:
+        from huggingface_hub import hf_hub_download
+        folder = os.path.join(os.path.dirname(os.path.abspath(__file__)), "contoh")
+        unduh = lambda t, fase: hf_hub_download(  # noqa: E731
+            "ZaXira/palu-tsunami-lahan-pertanian", f"tif/palu-tsunami_{t}_{fase}_disaster.tif",
+            repo_type="dataset", local_dir=folder)
+        return [[unduh(t, "pre"), unduh(t, "post"), DEFAULT_RESOLUSI_M] for t in TILE_CONTOH]
+    except Exception as e:
+        print(f"[contoh] GAGAL mengunduh contoh: {type(e).__name__}: {e}", flush=True)
+        return []
+
+
+CONTOH = _siapkan_contoh()
 
 
 def _logo_data_uri():
@@ -132,7 +151,7 @@ PANDUAN = f"""
 
 ### Agar hasil sesuai penelitian
 - **GeoTIFF asli memberi hasil terbaik.** Uji regresi pada 4 tile uji menunjukkan jalur GeoTIFF mereproduksi
-  hasil resmi penelitian secara identik (526/526 poligon).
+  hasil resmi penelitian secara identik (526/526 segmen).
 - Bila hanya ada JPG/PNG, skalakan ketiga band dengan **satu skala min–max yang sama**. Peregangan per band
   membuat lebih dari separuh lahan tidak terdeteksi (hanya 37,8% kelas sama dengan hasil resmi).
 - Kedua citra harus **sejajar piksel-ke-piksel**; hindari tangkapan layar. Beda ukuran pre/post sampai
@@ -141,11 +160,16 @@ PANDUAN = f"""
 
 ### Membaca hasil
 - **Terdampak Berat** paling andal dan dapat dipakai sebagai penunjuk prioritas.
-- **Terdampak Sedang** dan poligon kecil yang terisolasi perlu diperiksa ulang di lapangan.
+- **Terdampak Sedang** dan segmen kecil yang terisolasi perlu diperiksa ulang di lapangan.
 - Luas per kelas bersifat indikatif: aplikasi tidak memiliki *ground truth*, sehingga *false positive*
   tidak dapat dikenali dan petak kecil dapat terlewat.
 
-Contoh pasangan citra GeoTIFF dari 4 tile uji tersedia di [dataset ini]({DATASET}).
+Contoh pasangan citra GeoTIFF dari 4 tile uji dapat dipilih langsung di bawah tombol **Proses citra**,
+dan juga tersedia di [dataset ini]({DATASET}).
+
+### Kuota GPU
+Aplikasi berjalan di ZeroGPU yang kuotanya dihitung per pengguna. Pengunjung tanpa login mendapat kuota
+paling kecil; **login ke Hugging Face** agar pemrosesan memakai kuota akun Anda sendiri yang lebih besar.
 """
 
 TENTANG = f"""
@@ -162,7 +186,7 @@ Machine Learning: Studi Kasus Tsunami Palu 2018"**.
 | 1. Deteksi lahan pertanian | Mask R-CNN (detectron2, R50-FPN) | citra pre |
 | 2. Enam layer fitur perubahan | Canny, CVA+HSV, ExG, CVA+Otsu, indeks air RGB, AnyChange (SAM) | citra pre + post |
 | 3. Klasifikasi kerusakan | Random Forest (3 kelas) | 6 fitur kontinu |
-| 4. Luas per kelas | jumlah piksel × resolusi² | poligon + resolusi |
+| 4. Luas per kelas | jumlah piksel × resolusi² | segmen + resolusi |
 
 Aplikasi murni inferensi dengan bobot final penelitian, berjalan di ZeroGPU dengan presisi FP32 (TF32
 dimatikan). Kuota GPU harian terbatas; bila habis, coba lagi nanti atau login ke Hugging Face.
@@ -188,12 +212,16 @@ with gr.Blocks(title=JUDUL) as demo:
                 in_res = gr.Number(label="Resolusi citra (meter/piksel) — terisi otomatis dari GeoTIFF",
                                    value=DEFAULT_RESOLUSI_M, minimum=0.01, step=0.01, scale=3)
                 btn = gr.Button("Proses citra", variant="primary", scale=1, size="lg")
+            if CONTOH:
+                gr.Examples(examples=CONTOH, inputs=[in_pre, in_post, in_res], cache_examples=False,
+                            example_labels=[f"Tile {t}" for t in TILE_CONTOH],
+                            label="Contoh: 4 tile uji Palu 2018 (GeoTIFF). Klik salah satu, lalu tekan Proses citra.")
             gr.HTML('<div class="kelas"><span><i style="background:#27ae60"></i>Tidak Terdampak</span>'
                     '<span><i style="background:#f39c12"></i>Terdampak Sedang</span>'
                     '<span><i style="background:#c0392b"></i>Terdampak Berat</span></div>')
             out_img = gr.Image(label="Overlay kelas kerusakan di atas citra sesudah bencana", type="numpy", interactive=False)
             with gr.Row():
-                out_tabel = gr.Dataframe(label="Jumlah poligon & luas per kelas kerusakan", value=TABEL_KOSONG, interactive=False)
+                out_tabel = gr.Dataframe(label="Jumlah segmen & luas per kelas kerusakan", value=TABEL_KOSONG, interactive=False)
                 out_log = gr.Textbox(label="Log proses", lines=12, max_lines=20, interactive=False)
         with gr.Tab("Panduan"):
             gr.Markdown(PANDUAN)

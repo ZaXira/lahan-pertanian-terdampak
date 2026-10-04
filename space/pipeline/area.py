@@ -13,7 +13,7 @@ from pipeline.classify import LABELS_ORD
 DEFAULT_RESOLUSI_M = 0.5   # resolusi citra Palu (xBD) ~0,5 m/piksel
 
 COL_KELAS = "Kelas Kerusakan"
-COL_JUMLAH = "Jumlah Poligon"
+COL_JUMLAH = "Jumlah Segmen"
 COL_LUAS = "Total Luas (ha)"
 
 

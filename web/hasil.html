@@ -135,8 +135,8 @@
     p3: (w) => {
       const pt = D.t3.per_tile;
       return [new Chart(c4, { type: "bar", data: { labels: pt.map((r) => r.tile_id.padStart(8, "0")), datasets: [
-        { label: "F1 lokalisasi", data: pt.map((r) => +r.f1_lokalisasi), backgroundColor: w.accent },
-        { label: "Recall lokalisasi", data: pt.map((r) => +r.recall_lokalisasi), backgroundColor: w.s3 },
+        { label: "F1 segmentasi", data: pt.map((r) => +r.f1_lokalisasi), backgroundColor: w.accent },
+        { label: "Recall segmentasi", data: pt.map((r) => +r.recall_lokalisasi), backgroundColor: w.s3 },
         { label: "Akurasi model Mask R-CNN–RF", data: pt.map((r) => +r.akurasi_klasifikasi_matched), backgroundColor: w.s2 }] },
         options: { ...dasar(w), scales: { ...dasar(w).scales, y: { ...dasar(w).scales.y, max: 1 } } } })];
     }
@@ -149,9 +149,9 @@
 
   const d = D.t3.deteksi;
   document.getElementById("kartu3").innerHTML = [
-    ["F1_lokalisasi", fmt(d.f1_lokalisasi), `<em>precision</em> ${fmt(d.precision)}, <em>recall</em> ${fmt(d.recall)}`, "acc"],
+    ["F1_segmentasi", fmt(d.f1_lokalisasi), `<em>precision</em> ${fmt(d.precision)}, <em>recall</em> ${fmt(d.recall)}`, "acc"],
     ["F1-<em>macro</em> Mask R-CNN–RF", fmt(D.t3.macro_f1), `${d.TP} pasangan yang terdeteksi`, ""],
-    ["Skor gabungan xView2", fmt(D.t3.xview2), `0,3 × F1_lokalisasi + 0,7 × F1 kerusakan (${fmt(D.t3.hm)})`, ""],
+    ["Skor gabungan xView2", fmt(D.t3.xview2), `0,3 × F1_segmentasi + 0,7 × F1 kerusakan (${fmt(D.t3.hm)})`, ""],
     ["mIoU piksel", fmt(D.t3.miou.rata_rata), "termasuk kelas latar belakang", ""]
   ].map(([a, n, l, c]) => `<div><div class="who">${a}</div><div class="num ${c}">${n}</div><p>${l}</p></div>`).join("");
 })();

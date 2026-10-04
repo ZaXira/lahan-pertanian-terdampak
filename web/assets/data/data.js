@@ -913,7 +913,7 @@ window.DATA = {
    "panel": []
   },
   "T4.3.b": {
-   "judul": "Hasil lokalisasi model Mask R-CNN–RF (Tujuan 3) dibandingkan dengan Mask R-CNN Tujuan 1 pada basis yang sama",
+   "judul": "Hasil segmentasi model Mask R-CNN–RF (Tujuan 3) dibandingkan dengan Mask R-CNN Tujuan 1 pada basis yang sama",
    "kepala": [
     [
      [
@@ -1135,7 +1135,7 @@ window.DATA = {
    ]
   },
   "T4.3.c2": {
-   "judul": "*Recall* lokalisasi model Mask R-CNN–RF menurut kuartil luas segmen *ground truth*",
+   "judul": "*Recall* segmentasi model Mask R-CNN–RF menurut kuartil luas segmen *ground truth*",
    "kepala": [
     [
      [
@@ -1159,7 +1159,7 @@ window.DATA = {
       1
      ],
      [
-      "*Recall* lokalisasi",
+      "*Recall* segmentasi",
       1,
       1
      ]
@@ -1327,7 +1327,7 @@ window.DATA = {
      ""
     ],
     [
-     "F1_lokalisasi",
+     "F1_segmentasi",
      "0,7062"
     ],
     [
@@ -1351,7 +1351,7 @@ window.DATA = {
      "0,4720"
     ],
     [
-     "Skor gabungan xView2 = 0,3 × F1_lokalisasi + 0,7 × F1 kerusakan",
+     "Skor gabungan xView2 = 0,3 × F1_segmentasi + 0,7 × F1 kerusakan",
      "0,3103"
     ],
     [
@@ -1563,7 +1563,7 @@ window.DATA = {
      "0,9602"
     ],
     [
-     "§*Recall* lokalisasi per kelas GT",
+     "§*Recall* segmentasi per kelas GT",
      "",
      "",
      "",
@@ -1595,7 +1595,7 @@ window.DATA = {
      "0,7500"
     ]
    ],
-   "keterangan": "Hasil lokalisasi per *tile* disajikan pada Tabel 4.10. Akurasi model Mask R-CNN–RF per *tile* dari `test_results_per_tile.csv`; jumlah TP kelas benar/salah, komposisi pasangan TP, dan *recall* per kelas diturunkan dari `match_all_4tile.csv`. *Recall* klasifikasi = pasangan yang kelasnya benar dibagi pasangan TP pada kelas GT yang sama; *recall* lokalisasi = pasangan TP dibagi segmen GT pada kelas yang sama. Tanda – = tidak terdefinisi (penyebut nol).",
+   "keterangan": "Hasil segmentasi per *tile* disajikan pada Tabel 4.10. Akurasi model Mask R-CNN–RF per *tile* dari `test_results_per_tile.csv`; jumlah TP kelas benar/salah, komposisi pasangan TP, dan *recall* per kelas diturunkan dari `match_all_4tile.csv`. *Recall* klasifikasi = pasangan yang kelasnya benar dibagi pasangan TP pada kelas GT yang sama; *recall* segmentasi = pasangan TP dibagi segmen GT pada kelas yang sama. Tanda – = tidak terdefinisi (penyebut nol).",
    "tebal": [],
    "panel": [
     0,
@@ -2230,7 +2230,7 @@ window.DATA = {
     ],
     [
      "Deteksi objek kecil",
-     "*Recall* lokalisasi kuartil luas terkecil hanya 0,4371",
+     "*Recall* segmentasi kuartil luas terkecil hanya 0,4371",
      "33,9% segmen uji tidak terdeteksi dan tidak dapat dinilai kerusakannya",
      "Dikuantifikasi melalui tipologi *false negative* dan kuartil luas (Tabel 4.11 dan Tabel 4.12)"
     ],

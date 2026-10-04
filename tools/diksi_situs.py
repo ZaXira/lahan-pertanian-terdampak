@@ -133,7 +133,8 @@ print(f"diperbarui web/assets/data/data.js ({n_ubah[0]} teks)")
 
 # ================================================================ gambar overlay (judul legenda)
 IMG = ROOT / "web" / "assets" / "img"
-for t in ("00000163", "00000169", "00000184", "00000195"):
+SUDAH = IMG / ".diksi_overlay_selesai"          # penanda: overlay sudah ditambal, jangan ditambal ulang
+for t in (() if SUDAH.exists() else ("00000163", "00000169", "00000184", "00000195")):
     f = IMG / f"tile_{t}_overlay.jpg"
     im = Image.open(f).convert("RGB")
     W, H = im.size
@@ -149,6 +150,7 @@ for t in ("00000163", "00000169", "00000184", "00000195"):
     im.save(f, quality=90)
     im.save(f.with_suffix(".webp"), quality=85)
     print("diperbarui", f.name, "+ .webp")
+SUDAH.write_text("judul legenda overlay sudah: jumlah segmen\n", encoding="utf-8")
 
 # ================================================================ aplikasi Gradio (teks tampilan saja)
 ganti_berkas("space/app.py", [
@@ -164,3 +166,17 @@ ganti_berkas("space/README.md", [
     ("Aplikasi ini menjalankan pipeline Tujuan 3", f"Aplikasi ini menjalankan model {M} (Tujuan 3)"),
     ("(526/526 poligon identik)", "(526/526 segmen identik)"),
 ])
+
+# ================================================================ lokalisasi -> segmentasi (teks tampilan HTML)
+# kunci data (f1_lokalisasi, recall_lokalisasi) tidak tersentuh: huruf kecil dan diawali garis bawah
+LOK = [(re.compile(r"\bF1_lokalisasi\b"), "F1_segmentasi"), (re.compile(r"\bLokalisasi\b"), "Segmentasi"),
+       (re.compile(r"\blokalisasi\b"), "segmentasi")]
+for nama in ("index.html", "hasil.html", "metode.html", "demo.html", "unggah.html"):
+    p = ROOT / "web" / nama
+    s = p.read_text(encoding="utf-8")
+    s2 = s
+    for pola, g in LOK:
+        s2 = pola.sub(g, s2)
+    if s2 != s:
+        p.write_text(s2, encoding="utf-8")
+        print("lokalisasi -> segmentasi:", nama)

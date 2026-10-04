@@ -118,7 +118,7 @@
           <thead><tr><th>Kelas kerusakan</th><th>Jumlah segmen</th><th>Luas (ha)</th></tr></thead><tbody>${baris}</tbody></table>
           <p class="tnote">Luas dihitung dari jumlah piksel × 0,4984² m². Sumber: keluaran aplikasi pada jalur GeoTIFF (FP32).</p></div>
         <div class="callout small"><b>Dibandingkan dengan <em>ground truth</em> tile ini:</b>
-          ${r.TP} dari ${r.n_gt} petak terdeteksi (<em>recall</em> ${fmt(+r.recall_lokalisasi)}), ${r.FP} prediksi tanpa pasangan, F1_lokalisasi ${fmt(+r.f1_lokalisasi)}, dan akurasi kelas pada pasangan terdeteksi ${fmt(+r.akurasi_klasifikasi_matched)}.</div>
+          ${r.TP} dari ${r.n_gt} petak terdeteksi (<em>recall</em> ${fmt(+r.recall_lokalisasi)}), ${r.FP} prediksi tanpa pasangan, F1_segmentasi ${fmt(+r.f1_lokalisasi)}, dan akurasi kelas pada pasangan terdeteksi ${fmt(+r.akurasi_klasifikasi_matched)}.</div>
         <p class="small" style="margin:0"><a class="link" href="#" data-zoom="assets/img/tile_${pilih}_overlay.jpg"><i class="ph ph-magnifying-glass-plus" aria-hidden="true"></i>Lihat overlay beserta legenda</a></p>`;
     }, 1400);
   });

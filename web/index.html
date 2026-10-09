@@ -136,7 +136,7 @@
     <div class="big"><picture><source srcset="assets/img/tile_00000195_overlay_crop.webp" type="image/webp"><img src="assets/img/tile_00000195_overlay_crop.jpg" alt="Hasil model Mask R-CNN–RF pada tile 00000195" loading="lazy"></picture>
       <div class="in-txt"><div class="who">Model Mask R-CNN–RF</div><div class="num">${fmt(t3.deteksi.f1_lokalisasi)}</div>
       <p class="lbl">F1_segmentasi pada 604 petak uji; Skor gabungan xView2 ${fmt(t3.xview2)}.</p></div></div>
-    <div><div class="who">Mask R-CNN</div><div class="num">${fmt(D.t1.mrcnn[2])}</div><p class="lbl">F1 tingkat instans segmentasi (YOLOv8-seg: ${fmt(D.t1.yolo[2])}).</p></div>
+    <div><div class="who">Mask R-CNN</div><div class="num">${fmt(D.t1.mrcnn[2])}</div><p class="lbl">F1 tingkat segmen (YOLOv8-seg: ${fmt(D.t1.yolo[2])}).</p></div>
     <div><div class="who">Random Forest</div><div class="num">${fmt(i(t2.rf, "Kappa kuadratik"))}</div><p class="lbl">Kappa tertimbang kuadratik klasifikasi kerusakan (LightGBM: ${fmt(i(t2.lgbm, "Kappa kuadratik"))}).</p></div>
     <div class="wide"><div><div class="who">Aplikasi web</div><div class="num" style="margin:0">526/526</div></div><p class="lbl">segmen keluaran aplikasi identik dengan hasil resmi pada jalur GeoTIFF (FP32).</p></div>`;
 

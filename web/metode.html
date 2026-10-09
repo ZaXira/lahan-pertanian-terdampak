@@ -34,8 +34,8 @@
       <div class="rv"><h3><i class="ph ph-target" aria-hidden="true"></i>Business Understanding</h3><p>Wilayah studi Palu 2018, kebutuhan informasi kerusakan per petak, dan kriteria keberhasilan yang bersifat komparatif.</p></div>
       <div class="rv"><h3><i class="ph ph-magnifying-glass" aria-hidden="true"></i>Data Understanding</h3><p>Subset palu-tsunami xBD: 190 pasang tile dari tiga sensor, dengan citra sebelum bencana dari 2016-2018.</p></div>
       <div class="rv"><h3><i class="ph ph-pencil-ruler" aria-hidden="true"></i>Data Preparation</h3><p>Georeferensi ulang ke UTM 51S, seleksi 18 tile, digitasi 3.271 petak, pelabelan, dan konstruksi enam fitur perubahan.</p></div>
-      <div class="rv"><h3><i class="ph ph-cpu" aria-hidden="true"></i>Modeling</h3><p>YOLOv8-seg vs Mask R-CNN (Tujuan 1), Random Forest vs LightGBM (Tujuan 2), dan integrasi <em>end-to-end</em> (Tujuan 3).</p></div>
-      <div class="rv"><h3><i class="ph ph-chart-bar" aria-hidden="true"></i>Evaluation</h3><p>Metrik piksel dan instans, F1-<em>macro</em>, Kappa tertimbang kuadratik, Skor gabungan xView2, mIoU, dan model pembanding.</p></div>
+      <div class="rv"><h3><i class="ph ph-cpu" aria-hidden="true"></i>Modeling</h3><p>YOLOv8-seg vs Mask R-CNN (Tujuan 1), Random Forest vs LightGBM (Tujuan 2), dan model Mask R-CNN–RF (Tujuan 3).</p></div>
+      <div class="rv"><h3><i class="ph ph-chart-bar" aria-hidden="true"></i>Evaluation</h3><p>Metrik tingkat piksel dan segmen, F1-<em>macro</em>, Kappa tertimbang kuadratik, Skor gabungan xView2, mIoU, dan model pembanding.</p></div>
       <div class="rv"><h3><i class="ph ph-globe-simple" aria-hidden="true"></i>Deployment</h3><p>Aplikasi web Gradio di Hugging Face Spaces yang divalidasi terhadap hasil resmi.</p></div>
     </div>
   </div>
@@ -65,10 +65,41 @@
       <div class="layer rv"><div class="ic">1</div><div><h3>Batas lahan</h3><div class="tech">Deteksi tepi Canny pada cincin batas petak</div><p>Proporsi tepi pematang sebelum bencana yang hilang sesudah bencana.</p></div></div>
       <div class="layer rv"><div class="ic">2</div><div><h3>Material asing</h3><div class="tech">CVA + Otsu + filter warna HSV</div><p>Piksel yang berubah dan berwarna khas lumpur atau material keabuan.</p></div></div>
       <div class="layer rv"><div class="ic">3</div><div><h3>Kehilangan tanaman</h3><div class="tech">Excess Green Index (ExG)</div><p>Penurunan neto luas vegetasi terhadap kondisi sebelum bencana.</p></div></div>
-      <div class="layer rv"><div class="ic">4</div><div><h3>Perubahan radiometri</h3><div class="tech">Change Vector Analysis + ambang Otsu</div><p>Intensitas perubahan spektral umum, jaring pengaman bagi bentuk kerusakan lain.</p></div></div>
+      <div class="layer rv"><div class="ic">4</div><div><h3>Perubahan radiometri</h3><div class="tech">Change Vector Analysis + ambang Otsu</div><p>Intensitas perubahan spektral umum, penangkap perubahan umum bagi bentuk kerusakan lain.</p></div></div>
       <div class="layer rv"><div class="ic">5</div><div><h3>Genangan baru</h3><div class="tech">Indeks air kanal biru dan merah</div><p>Piksel berair sesudah bencana yang sebelumnya bukan air.</p></div></div>
       <div class="layer rv"><div class="ic">6</div><div><h3>Perubahan semantik (SAC)</h3><div class="tech">AnyChange berbasis Segment Anything Model</div><p>Perubahan umum secara <em>zero-shot</em>, disepakati minimal dua <em>mask</em>.</p></div></div>
     </div>
+  </div>
+</section>
+
+<section class="alt" id="lokasi">
+  <div class="wrap">
+    <div class="head rv"><h2>Lokasi 18 tile terpilih</h2>
+      <p class="muted">Tujuh tile berada di Kota Palu (Kelurahan Talise dan Petobo) dan sebelas di Kabupaten Sigi (Kecamatan Dolo dan Sigi Biromaru). Empat tile uji adalah 00000163, 00000169, 00000184, dan 00000195.</p></div>
+    <div class="rv table-wrap"><table class="data">
+      <caption>Lokasi administratif setiap tile</caption>
+      <thead><tr><th>Tile</th><th>Peran</th><th>Desa/Kelurahan</th><th>Kecamatan</th><th>Kabupaten/Kota</th><th>Segmen</th></tr></thead>
+      <tbody>
+          <tr><td class="mono">00000065</td><td>Latih</td><td class="l">Talise</td><td class="l">Mantikulore</td><td class="l">Kota Palu</td><td>433</td></tr>
+          <tr><td class="mono">00000117</td><td>Latih</td><td class="l">Talise</td><td class="l">Mantikulore</td><td class="l">Kota Palu</td><td>511</td></tr>
+          <tr><td class="mono">00000163</td><td>Uji</td><td class="l">Petobo</td><td class="l">Palu Selatan</td><td class="l">Kota Palu</td><td>113</td></tr>
+          <tr><td class="mono">00000168</td><td>Latih</td><td class="l">Petobo</td><td class="l">Palu Selatan</td><td class="l">Kota Palu</td><td>105</td></tr>
+          <tr><td class="mono">00000169</td><td>Uji</td><td class="l">Mpanau (85%), Petobo (15%)</td><td class="l">Sigi Biromaru, Palu Selatan</td><td class="l">Sigi, Kota Palu</td><td>155</td></tr>
+          <tr><td class="mono">00000170</td><td>Latih</td><td class="l">Petobo</td><td class="l">Palu Selatan</td><td class="l">Kota Palu</td><td>59</td></tr>
+          <tr><td class="mono">00000182</td><td>Latih</td><td class="l">Petobo</td><td class="l">Palu Selatan</td><td class="l">Kota Palu</td><td>57</td></tr>
+          <tr><td class="mono">00000183</td><td>Latih</td><td class="l">Petobo</td><td class="l">Palu Selatan</td><td class="l">Kota Palu</td><td>212</td></tr>
+          <tr><td class="mono">00000184</td><td>Uji</td><td class="l">Langaleso</td><td class="l">Dolo</td><td class="l">Sigi</td><td>243</td></tr>
+          <tr><td class="mono">00000185</td><td>Latih</td><td class="l">Langaleso (66%), Jono Oge (34%)</td><td class="l">Dolo, Sigi Biromaru</td><td class="l">Sigi</td><td>140</td></tr>
+          <tr><td class="mono">00000186</td><td>Latih</td><td class="l">Jono Oge (60%), Langaleso (37%)</td><td class="l">Sigi Biromaru, Dolo</td><td class="l">Sigi</td><td>142</td></tr>
+          <tr><td class="mono">00000187</td><td>Latih</td><td class="l">Pombewe</td><td class="l">Sigi Biromaru</td><td class="l">Sigi</td><td>60</td></tr>
+          <tr><td class="mono">00000188</td><td>Latih</td><td class="l">Jono Oge (61%), Sidera (39%)</td><td class="l">Sigi Biromaru</td><td class="l">Sigi</td><td>170</td></tr>
+          <tr><td class="mono">00000189</td><td>Latih</td><td class="l">Sidera (59%), Jono Oge (33%)</td><td class="l">Sigi Biromaru</td><td class="l">Sigi</td><td>216</td></tr>
+          <tr><td class="mono">00000191</td><td>Latih</td><td class="l">Langaleso</td><td class="l">Dolo</td><td class="l">Sigi</td><td>93</td></tr>
+          <tr><td class="mono">00000193</td><td>Latih</td><td class="l">Jono Oge (60%), Pombewe (40%)</td><td class="l">Sigi Biromaru</td><td class="l">Sigi</td><td>268</td></tr>
+          <tr><td class="mono">00000194</td><td>Latih</td><td class="l">Langaleso</td><td class="l">Dolo</td><td class="l">Sigi</td><td>201</td></tr>
+          <tr><td class="mono">00000195</td><td>Uji</td><td class="l">Pombewe</td><td class="l">Sigi Biromaru</td><td class="l">Sigi</td><td>93</td></tr>
+      </tbody></table></div>
+    <p class="muted small rv" style="margin-top:12px">Lokasi diperoleh dari irisan batas tile dengan peta batas desa/kelurahan (pembaruan 13 Juni 2023). Desa/kelurahan yang mencakup kurang dari 10% luas tile tidak dicantumkan; persentase menunjukkan porsi luas tile. Sekitar 34% luas tile 00000065 berupa perairan Teluk Palu. Segmen = jumlah petak <em>ground truth</em> (total 3.271).</p>
   </div>
 </section>
 
@@ -84,7 +115,7 @@
       <div class="table-wrap"><table class="data">
         <thead><tr><th>Tahap</th><th>Metrik utama</th></tr></thead>
         <tbody>
-          <tr><td>Tujuan 1: segmentasi</td><td class="l"><em>Precision</em>, <em>recall</em>, F1, dan IoU tingkat piksel dan instans (pencocokan Hungarian, IoU ≥ 0,5)</td></tr>
+          <tr><td>Tujuan 1: segmentasi</td><td class="l"><em>Precision</em>, <em>recall</em>, F1, dan IoU tingkat piksel dan segmen (pencocokan Hungarian, IoU ≥ 0,5)</td></tr>
           <tr><td>Tujuan 2: klasifikasi</td><td class="l">F1-<em>macro</em> dan Cohen's Kappa tertimbang kuadratik</td></tr>
           <tr><td>Tujuan 3: model Mask R-CNN–RF</td><td class="l">F1_segmentasi, F1 Mask R-CNN–RF, Skor gabungan xView2, dan mIoU</td></tr>
           <tr><td>Aplikasi web</td><td class="l">Kesetaraan segmen, fitur, dan kelas terhadap hasil resmi</td></tr>

@@ -16,7 +16,7 @@ window.DATA = {
       1
      ],
      [
-      "Tingkat instans",
+      "Tingkat segmen",
       4,
       1
      ]
@@ -88,7 +88,7 @@ window.DATA = {
      "0,6589"
     ]
    ],
-   "keterangan": "Setiap nilai merupakan rerata makro dari empat *tile* uji (00000163, 00000169, 00000184, 00000195). Tingkat instans memakai pencocokan Hungarian dengan IoU ≥ 0,5.",
+   "keterangan": "Setiap nilai merupakan rerata makro dari empat *tile* uji (00000163, 00000169, 00000184, 00000195). Tingkat segmen memakai pencocokan Hungarian dengan IoU ≥ 0,5.",
    "tebal": [],
    "panel": []
   },
@@ -117,7 +117,7 @@ window.DATA = {
       2
      ],
      [
-      "Tingkat instans",
+      "Tingkat segmen",
       3,
       1
      ],
@@ -1118,7 +1118,7 @@ window.DATA = {
      "+0,1275"
     ]
    ],
-   "keterangan": "Kolom gabungan (mikro) dihitung dari jumlah TP, FP, dan FN keempat *tile*; untuk Tujuan 3 nilainya merupakan hasil resmi `summary_tujuan3.json`, untuk Tujuan 1 merupakan angka turunan. Nilai per *tile* Tujuan 1 adalah metrik instans per *tile* (rerata makronya disajikan pada Tabel 4.1). Selisih *recall* dihitung dari TP/n_GT tanpa pembulatan antara.",
+   "keterangan": "Kolom gabungan (mikro) dihitung dari jumlah TP, FP, dan FN keempat *tile*; untuk Tujuan 3 nilainya merupakan hasil resmi `summary_tujuan3.json`, untuk Tujuan 1 merupakan angka turunan. Nilai per *tile* Tujuan 1 adalah metrik segmen per *tile* (rerata makronya disajikan pada Tabel 4.1). Selisih *recall* dihitung dari TP/n_GT tanpa pembulatan antara.",
    "tebal": [
     10,
     11,
@@ -2316,10 +2316,10 @@ window.DATA = {
  },
  "t1": {
   "label": [
-   "Precision instans",
-   "Recall instans",
-   "F1 instans",
-   "IoU instans",
+   "Precision segmen",
+   "Recall segmen",
+   "F1 segmen",
+   "IoU segmen",
    "Precision piksel",
    "Recall piksel",
    "F1 piksel",

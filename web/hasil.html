@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#2f5d27">
 <title>Hasil | Lahan Terdampak</title>
-<meta name="description" content="Hasil penelitian: perbandingan YOLOv8-seg dan Mask R-CNN, Random Forest dan LightGBM, model Mask R-CNN–RF, dan validasi aplikasi web.">
+<meta name="description" content="Hasil penelitian dalam bahasa sederhana: model penemu petak, model penilai kerusakan, model PKLPTB, dan aplikasi web.">
 <link rel="icon" href="assets/img/logo-stis.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700;1,800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -18,8 +18,8 @@
   <div class="wrap">
     <div class="rv">
       <div class="eyebrow">Hasil penelitian</div>
-      <h1>Apa yang sudah andal, dan apa yang belum</h1>
-      <p class="lead">Semua angka dievaluasi pada 4 tile uji yang sama (604 petak) dan diambil langsung dari keluaran resmi penelitian.</p>
+      <h1>Apa yang sudah bisa diandalkan, dan apa yang belum</h1>
+      <p class="lead">Semua hasil diukur pada 4 lokasi uji (604 petak) yang tidak pernah dilihat komputer saat belajar.</p>
     </div>
   </div>
 </section>
@@ -27,11 +27,11 @@
 <section style="padding-top:12px">
   <div class="wrap">
     <div class="tabs" role="tablist">
-      <button class="tab" role="tab" aria-selected="true" data-pane="p1"><small>Tujuan 1</small>Segmentasi</button>
-      <button class="tab" role="tab" aria-selected="false" data-pane="p2"><small>Tujuan 2</small>Klasifikasi</button>
-      <button class="tab" role="tab" aria-selected="false" data-pane="p3"><small>Tujuan 3</small>Mask R-CNN–RF</button>
+      <button class="tab" role="tab" aria-selected="true" data-pane="p1"><small>Tujuan 1</small>Menemukan petak</button>
+      <button class="tab" role="tab" aria-selected="false" data-pane="p2"><small>Tujuan 2</small>Menilai kerusakan</button>
+      <button class="tab" role="tab" aria-selected="false" data-pane="p3"><small>Tujuan 3</small>Model PKLPTB</button>
       <button class="tab" role="tab" aria-selected="false" data-pane="p4">Aplikasi web</button>
-      <button class="tab" role="tab" aria-selected="false" data-pane="p5">Keterbatasan &amp; pemanfaatan</button>
+      <button class="tab" role="tab" aria-selected="false" data-pane="p5">Kesimpulan &amp; saran</button>
     </div>
 
     <!-- Tujuan 1 -->
@@ -39,13 +39,11 @@
       <div class="grid g2" style="gap:24px;align-items:start">
         <div>
           <h2>Mask R-CNN terpilih</h2>
-          <p class="muted">Mask R-CNN unggul pada 6 dari 8 metrik. Keunggulannya terutama pada <em>precision</em>: jumlah petak yang ditemukan kedua model hampir sama, tetapi Mask R-CNN menghasilkan jauh lebih sedikit segmen keliru. Mask R-CNN juga tidak gagal pada <em>fold</em> mana pun, sedangkan YOLOv8-seg gagal pada <em>fold</em> 3 (berhenti pada <em>epoch</em> 16 dengan hasil terbaik pada <em>epoch</em> 1).</p>
-          <div class="callout small">Nilai pada grafik adalah rerata makro 4 tile. Secara gabungan, Mask R-CNN mendeteksi 322 dari 604 petak (53,3%) karena batas bawaan 100 deteksi per citra; batas ini dinaikkan menjadi 500 pada Tujuan 3.</div>
+          <p class="muted">Kedua model menemukan jumlah petak yang hampir sama, tetapi <b>Mask R-CNN jauh lebih jarang salah</b>: 81 dari 100 petak yang ditandainya benar, sedangkan YOLOv8-seg hanya 61. Mask R-CNN juga selalu berhasil belajar, sedangkan YOLOv8-seg sempat gagal pada salah satu putaran latihan.</p>
+          <div class="callout small">Pada tahap ini Mask R-CNN baru menemukan 322 dari 604 petak (53,3%) karena dibatasi maksimal 100 petak per foto, padahal satu foto bisa berisi lebih dari 200 petak. Batas ini kemudian dinaikkan menjadi 500 pada Tujuan 3.</div>
         </div>
-        <div class="card"><div class="chart-box"><canvas id="c1" aria-label="Perbandingan YOLOv8-seg dan Mask R-CNN"></canvas></div></div>
+        <div class="card"><h3>Perbandingan kedua model</h3><div class="chart-box"><canvas id="c1" aria-label="Perbandingan YOLOv8-seg dan Mask R-CNN"></canvas></div><p class="small muted" style="margin-top:8px">Skala 0–1, makin tinggi makin baik.</p></div>
       </div>
-      <div style="margin-top:24px" data-tabel="T4.1.b"></div>
-      <div style="margin-top:18px" data-tabel="T4.1.c"></div>
     </div>
 
     <!-- Tujuan 2 -->
@@ -53,15 +51,14 @@
       <div class="grid g2" style="gap:24px;align-items:start">
         <div>
           <h2>Random Forest terpilih</h2>
-          <p class="muted">Kappa tertimbang kuadratik Random Forest lebih tinggi karena lebih jarang melakukan kesalahan berjarak dua tingkat, misalnya menilai lahan utuh sebagai rusak berat. F1-<em>macro</em> kedua model nyaris setara.</p>
-          <div class="callout warn small">Kelas Terdampak Sedang praktis tidak dikenali (F1 0,0545). Proporsinya turun dari 9,8% pada data latih menjadi 5,0% pada data uji, dan luas median petaknya pada data uji 8,58 kali data latih.</div>
+          <p class="muted">Random Forest lebih jarang membuat kesalahan fatal, misalnya menilai lahan yang rusak berat sebagai tidak terdampak. Karena itu nilai Kappa-nya lebih tinggi (0,5556 dibanding 0,4566), yang tergolong kesesuaian <b>sedang</b>.</p>
+          <div class="metrics" style="grid-template-columns:repeat(2,1fr);margin:18px 0">
+            <div><div class="who">Terdampak Berat</div><div class="num acc">259/268</div><p>dikenali dengan benar (96,6%)</p></div>
+            <div><div class="who">Terdampak Sedang</div><div class="num">3/30</div><p>dikenali dengan benar</p></div>
+          </div>
+          <div class="callout warn small"><b>Mengapa Terdampak Sedang sulit?</b> Contoh petak kelas ini sedikit, dan proporsinya di lokasi uji (5,0%) lebih kecil daripada di data latihan (9,8%). Selain itu, petak Terdampak Sedang di lokasi uji umumnya jauh lebih besar (luas mediannya sekitar 8,6 kali) daripada contoh yang dipelajari komputer.</div>
         </div>
-        <div class="card"><div class="chart-box"><canvas id="c2" aria-label="Perbandingan Random Forest dan LightGBM"></canvas></div></div>
-      </div>
-      <div style="margin-top:24px" data-tabel="T4.2.c"></div>
-      <div class="grid g2" style="margin-top:24px;gap:24px;align-items:start">
-        <div class="card"><h3>Feature importance Random Forest</h3><div class="chart-box" style="height:340px"><canvas id="c3" aria-label="Feature importance"></canvas></div></div>
-        <div data-tabel="T4.2.e"></div>
+        <div class="card"><h3>Perbandingan kedua model</h3><div class="chart-box"><canvas id="c2" aria-label="Perbandingan Random Forest dan LightGBM"></canvas></div><p class="small muted" style="margin-top:8px">Skala 0–1, makin tinggi makin baik.</p></div>
       </div>
     </div>
 
@@ -70,39 +67,62 @@
       <div class="metrics" id="kartu3"></div>
       <div class="grid g2" style="gap:24px;margin-top:24px;align-items:start">
         <div>
-          <h2>Kinerja model Mask R-CNN–RF per tile</h2>
-          <p class="muted">Setelah batas deteksi dinaikkan, 66,1% petak uji terdeteksi. Ketidaksempurnaan geometri deteksi hanya menurunkan F1-<em>macro</em> klasifikasi sebesar 0,0182 (model pembanding), sehingga keterbatasan utama tetap pada kelas Terdampak Sedang dan cakupan deteksi petak kecil.</p>
-          <div class="callout small">Skor gabungan xView2 rendah terutama karena rerata harmonik F1 kerusakan didominasi kelas Terdampak Sedang; rerata aritmetiknya (F1-<em>macro</em>) 0,4720.</div>
+          <h2>Hasil setelah digabung</h2>
+          <p class="muted">Setelah batas deteksi dinaikkan, model PKLPTB menemukan lebih banyak petak, yaitu 2 dari setiap 3 petak. Penilaian kerusakannya mengikuti pola Random Forest: sangat baik untuk lahan rusak berat, lemah untuk Terdampak Sedang.</p>
+          <div class="callout small"><b>Skor xView2 rendah (0,3103)</b> terutama karena kelas Terdampak Sedang. Skor ini sengaja dibuat "keras": satu kelas yang buruk akan menarik turun seluruh nilai. Pengujian tambahan juga menunjukkan bahwa ketidaktepatan bentuk petak hasil deteksi hanya berpengaruh kecil.</div>
+          <p class="muted small">Ada juga 127 petak yang ditandai model padahal tidak ada di data acuan. Sebagian besar sebenarnya berada di atas lahan pertanian, hanya batasnya tidak pas, misalnya beberapa petak terbaca sebagai satu.</p>
         </div>
-        <div class="card"><div class="chart-box"><canvas id="c4" aria-label="Kinerja per tile"></canvas></div></div>
+        <div class="card"><h3>Ketepatan per tingkat kerusakan (F1)</h3><div class="chart-box"><canvas id="c4" aria-label="F1 per kelas model PKLPTB"></canvas></div><p class="small muted" style="margin-top:8px">Skala 0–1, makin tinggi makin baik.</p></div>
       </div>
-      <div style="margin-top:24px" data-tabel="T4.3.g"></div>
-      <div class="grid g2" style="gap:18px;margin-top:18px;align-items:start">
-        <div data-tabel="T4.3.d"></div>
-        <div data-tabel="T4.3.f"></div>
-      </div>
-      <div style="margin-top:18px" data-tabel="T4.3.j"></div>
-      <div style="margin-top:18px" data-tabel="T4.3.k"></div>
     </div>
 
     <!-- Aplikasi web -->
     <div class="pane" id="p4" hidden>
-      <h2>Aplikasi mereproduksi hasil penelitian</h2>
-      <p class="muted">Pada jalur GeoTIFF dengan presisi FP32, seluruh 526 segmen keluaran aplikasi identik dengan hasil resmi. Kesetaraan ini bergantung pada cara penyiapan citra dan pengaturan presisi GPU.</p>
-      <div data-tabel="T4.4.c"></div>
-      <div class="grid g2" style="gap:18px;margin-top:18px;align-items:start">
-        <div data-tabel="T4.4.d"></div>
-        <div data-tabel="T4.4.e"></div>
+      <div class="grid g2" style="gap:24px;align-items:start">
+        <div>
+          <h2>Aplikasi memberi hasil yang sama dengan penelitian</h2>
+          <p class="muted">Aplikasi diuji pada keempat lokasi uji. Seluruh <b>526 dari 526 petak</b> hasil aplikasi sama persis dengan hasil penelitian, termasuk tingkat kerusakannya.</p>
+          <div class="metrics" style="grid-template-columns:repeat(2,1fr);margin:18px 0">
+            <div><div class="who">Waktu proses</div><div class="num acc">±22 detik</div><p>per pasang foto di Hugging Face (GPU)</p></div>
+            <div><div class="who">Kesamaan hasil</div><div class="num">100%</div><p>pada foto GeoTIFF asli</p></div>
+          </div>
+        </div>
+        <div>
+          <h2>Tips agar hasilnya tepat</h2>
+          <ul class="muted">
+            <li>Gunakan foto <b>GeoTIFF asli</b>. Hasilnya 100% sama dengan penelitian.</li>
+            <li>Jika hanya punya JPG/PNG, ubah warnanya dengan satu skala yang sama untuk ketiga warna. Dengan cara ini 96,8% petak masih ditemukan; cara yang keliru hanya menemukan 40,3%.</li>
+            <li>Komputer biasa tanpa GPU tidak cukup: proses tidak selesai setelah lebih dari 50 menit.</li>
+            <li>Anggap hasilnya sebagai <b>perkiraan awal</b> yang tetap perlu dicek di lapangan.</li>
+          </ul>
+          <p><a class="btn" href="unggah.html">Coba dengan foto sendiri</a></p>
+        </div>
       </div>
-      <div style="margin-top:18px" data-tabel="T4.4.b"></div>
     </div>
 
-    <!-- Keterbatasan -->
+    <!-- Kesimpulan -->
     <div class="pane" id="p5" hidden>
-      <h2>Keterbatasan dan potensi pemanfaatan</h2>
-      <p class="muted">Keluaran model paling tepat dipakai sebagai penapisan awal yang diikuti verifikasi lapangan terarah.</p>
-      <div data-tabel="T4.5.b" data-kiri="0,1,2,3"></div>
-      <div style="margin-top:18px" data-tabel="T4.5.c" data-kiri="0,1,2,3"></div>
+      <div class="grid g2" style="gap:24px;align-items:start">
+        <div>
+          <h2>Kesimpulan</h2>
+          <ol class="muted">
+            <li><b>Tujuan 1 tercapai.</b> Mask R-CNN mampu menemukan petak lahan pertanian dari foto satelit dan lebih jarang salah daripada YOLOv8-seg.</li>
+            <li><b>Tujuan 2 tercapai.</b> Random Forest menilai kerusakan dengan kesesuaian sedang. Lahan rusak berat dikenali dengan sangat baik, tetapi Terdampak Sedang belum.</li>
+            <li><b>Tujuan 3 berhasil dibangun, tetapi masih perlu dikembangkan.</b> Model PKLPTB menemukan 2 dari 3 petak dan sudah tersedia sebagai aplikasi web yang hasilnya sama persis dengan penelitian.</li>
+          </ol>
+          <div class="callout small">Saat ini model PKLPTB paling tepat dipakai sebagai <b>alat identifikasi awal</b>: menunjuk lahan yang kemungkinan rusak berat agar petugas tahu lokasi mana yang perlu dicek lebih dulu.</div>
+        </div>
+        <div>
+          <h2>Saran untuk penelitian berikutnya</h2>
+          <ul class="muted">
+            <li>Memperbanyak contoh petak Terdampak Sedang dari lokasi atau bencana lain.</li>
+            <li>Meningkatkan kemampuan menemukan petak yang sangat kecil.</li>
+            <li>Membagi foto menjadi potongan yang lebih kecil agar contoh latihan lebih banyak.</li>
+            <li>Menentukan batas tingkat kerusakan berdasarkan sebaran data, dan mempertimbangkan luas kerusakan yang sebenarnya, bukan hanya persentasenya.</li>
+            <li>Melibatkan lebih dari satu penilai dan memeriksa sebagian petak langsung di lapangan.</li>
+          </ul>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -117,43 +137,41 @@
   const dasar = (w) => ({
     maintainAspectRatio: false,
     scales: { x: { ticks: { color: w.ink, font: { family: w.font } }, grid: { color: w.line } },
-              y: { ticks: { color: w.ink, font: { family: w.font } }, grid: { color: w.line }, beginAtZero: true } },
+              y: { ticks: { color: w.ink, font: { family: w.font } }, grid: { color: w.line }, beginAtZero: true, max: 1 } },
     plugins: { legend: { labels: { color: w.ink, font: { family: w.font } } },
                tooltip: { callbacks: { label: (c) => ` ${c.dataset.label}: ${fmt(c.raw)}` } } }
   });
+  const pilih = (lbl, arr, nama) => nama.map((n) => arr[lbl.indexOf(n)]);
+  const T1 = ["Precision segmen", "Recall segmen", "F1 segmen"], T1L = ["Ketepatan (precision)", "Petak ditemukan (recall)", "F1"];
+  const T2 = ["F1-macro", "Kappa kuadratik"], T2L = ["F1 rata-rata kelas", "Kappa"];
   const GRAFIK = {
-    p1: (w) => [new Chart(c1, { type: "bar", data: { labels: D.t1.label, datasets: [
-      { label: "YOLOv8-seg", data: D.t1.yolo, backgroundColor: w.s2 },
-      { label: "Mask R-CNN", data: D.t1.mrcnn, backgroundColor: w.accent }] }, options: { ...dasar(w), scales: { ...dasar(w).scales, y: { ...dasar(w).scales.y, max: 1 } } } })],
-    p2: (w) => [
-      new Chart(c2, { type: "bar", data: { labels: D.t2.label, datasets: [
-        { label: "Random Forest", data: D.t2.rf, backgroundColor: w.accent },
-        { label: "LightGBM", data: D.t2.lgbm, backgroundColor: w.s2 }] }, options: { ...dasar(w), scales: { ...dasar(w).scales, y: { ...dasar(w).scales.y, max: 1 } } } }),
-      new Chart(c3, { type: "bar", data: { labels: D.fi.label, datasets: [
-        { label: "Gini importance", data: D.fi.gini, backgroundColor: w.accent },
-        { label: "Permutation importance (validasi)", data: D.fi.perm, backgroundColor: w.s2 }] }, options: { ...dasar(w), indexAxis: "y" } })],
+    p1: (w) => [new Chart(c1, { type: "bar", data: { labels: T1L, datasets: [
+      { label: "YOLOv8-seg", data: pilih(D.t1.label, D.t1.yolo, T1), backgroundColor: w.s2 },
+      { label: "Mask R-CNN", data: pilih(D.t1.label, D.t1.mrcnn, T1), backgroundColor: w.accent }] }, options: dasar(w) })],
+    p2: (w) => [new Chart(c2, { type: "bar", data: { labels: T2L, datasets: [
+      { label: "Random Forest", data: pilih(D.t2.label, D.t2.rf, T2), backgroundColor: w.accent },
+      { label: "LightGBM", data: pilih(D.t2.label, D.t2.lgbm, T2), backgroundColor: w.s2 }] }, options: dasar(w) })],
     p3: (w) => {
-      const pt = D.t3.per_tile;
-      return [new Chart(c4, { type: "bar", data: { labels: pt.map((r) => r.tile_id.padStart(8, "0")), datasets: [
-        { label: "F1 segmentasi", data: pt.map((r) => +r.f1_lokalisasi), backgroundColor: w.accent },
-        { label: "Recall segmentasi", data: pt.map((r) => +r.recall_lokalisasi), backgroundColor: w.s3 },
-        { label: "Akurasi model Mask R-CNN–RF", data: pt.map((r) => +r.akurasi_klasifikasi_matched), backgroundColor: w.s2 }] },
-        options: { ...dasar(w), scales: { ...dasar(w).scales, y: { ...dasar(w).scales.y, max: 1 } } } })];
+      const k = ["Tidak Terdampak", "Terdampak Sedang", "Terdampak Berat"];
+      return [new Chart(c4, { type: "bar", data: { labels: k, datasets: [
+        { label: "F1 model PKLPTB", data: k.map((x) => D.t3.f1_kelas[x]), backgroundColor: [w.none, w.mid, w.sev] }] },
+        options: { ...dasar(w), plugins: { ...dasar(w).plugins, legend: { display: false } } } })];
     }
   };
-  const c1 = document.getElementById("c1"), c2 = document.getElementById("c2"), c3 = document.getElementById("c3"), c4 = document.getElementById("c4");
+  const c1 = document.getElementById("c1"), c2 = document.getElementById("c2"), c4 = document.getElementById("c4");
   const gambar = (p) => { if (!GRAFIK[p]) return; (dibuat[p] || []).forEach((c) => c.destroy()); dibuat[p] = GRAFIK[p](warna()); };
   gambar("p1");
   document.addEventListener("tab", (e) => gambar(e.detail));
   document.addEventListener("tema", () => Object.keys(dibuat).forEach((p) => { if (!document.getElementById(p).hidden) gambar(p); else { (dibuat[p] || []).forEach((c) => c.destroy()); delete dibuat[p]; } }));
 
-  const d = D.t3.deteksi;
+  const d = D.t3.deteksi, n = d.TP + d.FN;
+  const persen = (a, b) => (100 * a / b).toLocaleString("id-ID", { maximumFractionDigits: 1 });
   document.getElementById("kartu3").innerHTML = [
-    ["F1_segmentasi", fmt(d.f1_lokalisasi), `<em>precision</em> ${fmt(d.precision)}, <em>recall</em> ${fmt(d.recall)}`, "acc"],
-    ["F1-<em>macro</em> Mask R-CNN–RF", fmt(D.t3.macro_f1), `${d.TP} pasangan yang terdeteksi`, ""],
-    ["Skor gabungan xView2", fmt(D.t3.xview2), `0,3 × F1_segmentasi + 0,7 × F1 kerusakan (${fmt(D.t3.hm)})`, ""],
-    ["mIoU piksel", fmt(D.t3.miou.rata_rata), "termasuk kelas latar belakang", ""]
-  ].map(([a, n, l, c]) => `<div><div class="who">${a}</div><div class="num ${c}">${n}</div><p>${l}</p></div>`).join("");
+    ["Petak ditemukan", `${d.TP}/${n}`, `${persen(d.TP, n)}% petak di lokasi uji`, "acc"],
+    ["Penanda yang benar", fmt(d.precision), "sekitar 3 dari 4 petak yang ditandai memang petak", ""],
+    ["Kelas benar", "264/399", "petak yang ditemukan dinilai dengan tepat (66,2%)", ""],
+    ["Skor xView2", fmt(D.t3.xview2), "skor gabungan baku (0–1)", ""]
+  ].map(([a, v, l, c]) => `<div><div class="who">${a}</div><div class="num ${c}">${v}</div><p>${l}</p></div>`).join("");
 })();
 </script>
 </body>

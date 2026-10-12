@@ -4,7 +4,7 @@ Kode artefak skripsi **"Penilaian Kerusakan Lahan Pertanian Terdampak Bencana Me
 Sangat Tinggi dengan Metode Deep Learning dan Machine Learning: Studi Kasus Tsunami Palu 2018"**.
 
 Rafliansyah Dwi Setiawan Tondau (NIM 222212827), D-IV Komputasi Statistik peminatan Sains Data,
-Politeknik Statistika STIS, 2026. Pembimbing: Dr. Eng. Arie Wahyu Wijayanto, S.S.T., M.T.
+Politeknik Statistika STIS, 2026. Dosen pembimbing: Dr. Eng. Arie W. Wijayanto, S.S.T., M.T. Tahun lulus: 2026.
 
 | | Tautan |
 |---|---|

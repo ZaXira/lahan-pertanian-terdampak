@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#2f5d27">
-<title>Metode | Lahan Terdampak</title>
-<meta name="description" content="Metode penelitian: CRISP-DM, Mask R-CNN, enam layer fitur perubahan, Random Forest, dan evaluasi model Mask R-CNN–RF.">
+<title>Alur &amp; Perhitungan | Lahan Terdampak</title>
+<meta name="description" content="Alur penelitian dan cara menghitung enam tanda kerusakan lahan pertanian dari foto satelit, dijelaskan dengan bahasa sederhana.">
 <link rel="icon" href="assets/img/logo-stis.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700;1,800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -17,9 +17,9 @@
 <section class="hero page">
   <div class="wrap">
     <div class="rv">
-      <div class="eyebrow">Metode penelitian</div>
-      <h1>Tiga tujuan, satu alur kerja CRISP-DM</h1>
-      <p class="lead">Setiap tujuan membandingkan dua model pada data dan protokol yang sama. Model terbaik digabungkan menjadi model Mask R-CNN–RF dan diwujudkan sebagai aplikasi web.</p>
+      <div class="eyebrow">Alur penelitian dan perhitungan</div>
+      <h1>Dari foto satelit sampai tingkat kerusakan per petak</h1>
+      <p class="lead">Halaman ini menjelaskan langkah demi langkah apa yang dikerjakan dalam penelitian, termasuk cara menghitung enam tanda kerusakan pada setiap petak.</p>
     </div>
   </div>
 </section>
@@ -27,58 +27,145 @@
 <section class="alt">
   <div class="wrap split">
     <div class="stick rv">
-      <h2>Enam fase CRISP-DM</h2>
-      <p class="muted">Kerangka kerja yang memandu penelitian dari perumusan kebutuhan sampai aplikasi yang dapat dipakai.</p>
+      <h2>Alur penelitian</h2>
+      <p class="muted">Penelitian mengikuti kerangka kerja CRISP-DM yang lazim dipakai dalam proyek sains data: pahami masalah, siapkan data, latih model, uji model, lalu jadikan aplikasi.</p>
     </div>
-    <div class="phases">
-      <div class="rv"><h3><i class="ph ph-target" aria-hidden="true"></i>Business Understanding</h3><p>Wilayah studi Palu 2018, kebutuhan informasi kerusakan per petak, dan kriteria keberhasilan yang bersifat komparatif.</p></div>
-      <div class="rv"><h3><i class="ph ph-magnifying-glass" aria-hidden="true"></i>Data Understanding</h3><p>Subset palu-tsunami xBD: 190 pasang tile dari tiga sensor, dengan citra sebelum bencana dari 2016-2018.</p></div>
-      <div class="rv"><h3><i class="ph ph-pencil-ruler" aria-hidden="true"></i>Data Preparation</h3><p>Georeferensi ulang ke UTM 51S, seleksi 18 tile, digitasi 3.271 petak, pelabelan, dan konstruksi enam fitur perubahan.</p></div>
-      <div class="rv"><h3><i class="ph ph-cpu" aria-hidden="true"></i>Modeling</h3><p>YOLOv8-seg vs Mask R-CNN (Tujuan 1), Random Forest vs LightGBM (Tujuan 2), dan model Mask R-CNN–RF (Tujuan 3).</p></div>
-      <div class="rv"><h3><i class="ph ph-chart-bar" aria-hidden="true"></i>Evaluation</h3><p>Metrik tingkat piksel dan segmen, F1-<em>macro</em>, Kappa tertimbang kuadratik, Skor gabungan xView2, mIoU, dan model pembanding.</p></div>
-      <div class="rv"><h3><i class="ph ph-globe-simple" aria-hidden="true"></i>Deployment</h3><p>Aplikasi web Gradio di Hugging Face Spaces yang divalidasi terhadap hasil resmi.</p></div>
-    </div>
+    <ol class="alur" style="padding:0;margin:0">
+      <li class="rv"><div><span class="tag-t">Memahami masalah</span><h3>Menentukan lokasi dan kebutuhan</h3><p>Lokasi penelitian adalah wilayah Palu dan Sigi yang terdampak bencana 28 September 2018. Kebutuhannya: tahu petak mana yang rusak dan seberapa parah.</p></div></li>
+      <li class="rv"><div><span class="tag-t">Memahami data</span><h3>Memilih foto satelit</h3><p>Dari 190 pasang foto satelit wilayah Palu pada data terbuka xBD, dipilih 18 pasang yang berisi lahan pertanian terdampak. Setiap pasang terdiri atas foto sebelum dan sesudah bencana.</p></div></li>
+      <li class="rv"><div><span class="tag-t">Menyiapkan data</span><h3>Menggambar petak dan memberi label</h3><p>Batas 3.271 petak sawah, ladang, dan tegalan digambar satu per satu, lalu setiap petak diberi tingkat kerusakan. Empat lokasi (604 petak) disisihkan khusus untuk ujian akhir.</p></div></li>
+      <li class="rv"><div><span class="tag-t">Tujuan 1</span><h3>Melatih komputer menemukan petak</h3><p>Dua model dibandingkan: Mask R-CNN dan YOLOv8-seg. Mask R-CNN terpilih karena jauh lebih jarang salah menandai petak.</p></div></li>
+      <li class="rv"><div><span class="tag-t">Menyiapkan data</span><h3>Mengukur enam tanda perubahan</h3><p>Pada setiap petak dihitung enam angka perubahan antara foto sebelum dan sesudah bencana. Cara menghitungnya dijelaskan di bagian bawah halaman ini.</p></div></li>
+      <li class="rv"><div><span class="tag-t">Tujuan 2</span><h3>Melatih komputer menilai kerusakan</h3><p>Dua model dibandingkan: Random Forest dan LightGBM. Random Forest terpilih karena lebih jarang membuat kesalahan fatal, misalnya menilai lahan rusak berat sebagai tidak terdampak.</p></div></li>
+      <li class="rv"><div><span class="tag-t">Tujuan 3</span><h3>Menggabungkan dan menguji</h3><p>Mask R-CNN dan Random Forest digabung menjadi <b>model PKLPTB</b>, lalu diuji pada 4 lokasi yang belum pernah dilihat sama sekali.</p></div></li>
+      <li class="rv"><div><span class="tag-t">Penerapan</span><h3>Membuat aplikasi web</h3><p>Model PKLPTB dipasang sebagai aplikasi web. Pengguna cukup mengunggah foto sebelum dan sesudah bencana, lalu aplikasi menampilkan peta dan luas lahan per tingkat kerusakan.</p></div></li>
+    </ol>
   </div>
 </section>
 
 <section>
   <div class="wrap">
-    <div class="head rv"><h2>Tiga kelas berdasarkan keluasan kerusakan</h2>
-      <p class="muted">Penilai mengestimasi proporsi luas petak d(P) yang menunjukkan indikasi kerusakan fisik, seperti tertimbun sedimen, retak, tergenang, atau hilangnya pematang. Kehilangan tanaman tidak dipakai sebagai penentu karena bisa berasal dari panen atau masa bera.</p></div>
+    <div class="head rv"><h2>Tiga tingkat kerusakan</h2>
+      <p class="muted">Setiap petak dinilai dari seberapa besar bagian petak yang menunjukkan tanda kerusakan fisik, seperti tertimbun lumpur, retak, tergenang, atau pematangnya hilang. Hilangnya tanaman saja tidak dianggap rusak, karena bisa saja petak itu baru dipanen.</p></div>
     <div class="rv" aria-hidden="true">
       <div class="scale"><div class="bar none"></div><div class="bar mid"></div><div class="bar sev"></div></div>
-      <div class="scale-lbl"><span>0%</span><span>&gt; 0% sampai 50%</span><span>&gt; 50% sampai 100%</span></div>
+      <div class="scale-lbl"><span>0%</span><span>lebih dari 0% sampai 50%</span><span>lebih dari 50%</span></div>
     </div>
     <div class="classes">
-      <div class="rv"><h3><span class="dot none"></span>Tidak Terdampak</h3><span class="mono">d(P) = 0%</span><p>Tidak ada indikasi kerusakan sama sekali.</p></div>
-      <div class="rv"><h3><span class="dot mid"></span>Terdampak Sedang</h3><span class="mono">0% &lt; d(P) ≤ 50%</span><p>Indikasi kerusakan pada sebagian petak; gabungan tingkat ringan dan sedang.</p></div>
-      <div class="rv"><h3><span class="dot sev"></span>Terdampak Berat</h3><span class="mono">d(P) &gt; 50%</span><p>Indikasi kerusakan pada sebagian besar luas petak.</p></div>
+      <div class="rv"><h3><span class="dot none"></span>Tidak Terdampak</h3><span class="mono">bagian rusak = 0%</span><p>Tidak ada tanda kerusakan sama sekali.</p></div>
+      <div class="rv"><h3><span class="dot mid"></span>Terdampak Sedang</h3><span class="mono">bagian rusak ≤ separuh petak</span><p>Sebagian petak rusak, tetapi sebagian besar masih bisa ditanami.</p></div>
+      <div class="rv"><h3><span class="dot sev"></span>Terdampak Berat</h3><span class="mono">bagian rusak &gt; separuh petak</span><p>Sebagian besar petak rusak dan sulit ditanami kembali.</p></div>
     </div>
   </div>
 </section>
 
-<section class="alt">
+<section class="alt" id="hitung">
   <div class="wrap">
-    <div class="head rv"><h2>Enam <em>layer</em> perubahan citra</h2>
-      <p class="muted">Setiap <em>layer</em> menghasilkan persentase luas petak yang berubah (0 sampai 100). Keenam nilai kontinu menjadi masukan Random Forest; versi ordinalnya hanya dipakai untuk pelaporan.</p></div>
-    <div class="layers">
-      <div class="layer rv"><div class="ic">1</div><div><h3>Batas lahan</h3><div class="tech">Deteksi tepi Canny pada cincin batas petak</div><p>Proporsi tepi pematang sebelum bencana yang hilang sesudah bencana.</p></div></div>
-      <div class="layer rv"><div class="ic">2</div><div><h3>Material asing</h3><div class="tech">CVA + Otsu + filter warna HSV</div><p>Piksel yang berubah dan berwarna khas lumpur atau material keabuan.</p></div></div>
-      <div class="layer rv"><div class="ic">3</div><div><h3>Kehilangan tanaman</h3><div class="tech">Excess Green Index (ExG)</div><p>Penurunan neto luas vegetasi terhadap kondisi sebelum bencana.</p></div></div>
-      <div class="layer rv"><div class="ic">4</div><div><h3>Perubahan radiometri</h3><div class="tech">Change Vector Analysis + ambang Otsu</div><p>Intensitas perubahan spektral umum, penangkap perubahan umum bagi bentuk kerusakan lain.</p></div></div>
-      <div class="layer rv"><div class="ic">5</div><div><h3>Genangan baru</h3><div class="tech">Indeks air kanal biru dan merah</div><p>Piksel berair sesudah bencana yang sebelumnya bukan air.</p></div></div>
-      <div class="layer rv"><div class="ic">6</div><div><h3>Perubahan semantik (SAC)</h3><div class="tech">AnyChange berbasis Segment Anything Model</div><p>Perubahan umum secara <em>zero-shot</em>, disepakati minimal dua <em>mask</em>.</p></div></div>
+    <div class="head rv"><h2>Cara menghitung enam tanda perubahan</h2>
+      <p class="muted">Foto satelit tersusun dari kotak-kotak kecil yang disebut piksel; satu piksel mewakili ±50 × 50 cm di lapangan. Agar mudah dipahami, contoh di bawah memakai petak berukuran 10 × 10 = 100 piksel. Setiap tanda dihitung dengan rumus yang sama:</p>
+      <p class="rv" style="font-family:var(--font-mono);background:var(--surface);border-radius:var(--radius-sm);padding:12px 16px;display:inline-block;margin:8px 0 0">skor = <b>jumlah piksel yang menunjukkan tanda</b> ÷ <b>jumlah piksel pembanding</b> × 100</p>
+      <p class="muted small" style="margin-top:12px">Hasilnya berupa persentase 0 sampai 100. Makin besar angkanya, makin kuat tanda kerusakan pada petak itu. Foto di setiap kartu adalah contoh nyata di salah satu lokasi uji.</p>
+    </div>
+
+    <article class="hitung rv">
+      <div>
+        <h3><span class="no">1</span>Pematang yang hilang</h3>
+        <p class="small muted">Pematang adalah tanda paling jelas sebuah petak. Jika pematang hilang, petak kemungkinan besar tertimbun atau bergeser.</p>
+        <figure class="contoh"><picture><source srcset="assets/img/layer/contoh1.webp" type="image/webp"><img src="assets/img/layer/contoh1.jpg" alt="Contoh tanda 1: pematang yang hilang (merah)" loading="lazy" data-zoom="assets/img/layer/contoh1.jpg"></picture><figcaption>Kiri: sebelum bencana · tengah: sesudah bencana · kanan: hasil perhitungan, merah = garis pematang yang hilang setelah bencana.</figcaption></figure>
+        <div class="duo"><div class="grid-img"><img src="assets/img/layer/hitung1.png" alt="Ilustrasi kotak: kiri garis pematang sebelum bencana, kanan sesudah bencana"></div><div><p class="small" style="margin:.6em 0 0"><span class="key"><i style="background:#3a8a3f"></i>pematang ada</span><span class="key"><i style="background:#c0392b"></i>pematang hilang</span></p>
+        <p class="small">Sebelum bencana ada 32 piksel garis pematang (kiri). Sesudah bencana hanya 8 yang tersisa (kanan).</p>
+        <p class="rumus">(1 − 8 ÷ 32) × 100 = <b>75</b> → 75% pematang hilang</p></div></div>
+      </div>
+    </article>
+
+    <article class="hitung rv">
+      <div>
+        <h3><span class="no">2</span>Tertutup lumpur atau material lain</h3>
+        <p class="small muted">Sebuah piksel dihitung bila memenuhi dua syarat: warnanya berubah cukup besar <em>dan</em> warna barunya mirip lumpur atau material keabuan.</p>
+        <figure class="contoh"><picture><source srcset="assets/img/layer/contoh2.webp" type="image/webp"><img src="assets/img/layer/contoh2.jpg" alt="Contoh tanda 2: material asing (merah)" loading="lazy" data-zoom="assets/img/layer/contoh2.jpg"></picture><figcaption>Kiri: sebelum bencana · tengah: sesudah bencana · kanan: hasil perhitungan, merah = bagian yang tertutup lumpur atau material keabuan.</figcaption></figure>
+        <div class="duo"><div class="grid-img"><img src="assets/img/layer/hitung2.png" alt="Ilustrasi kotak: kiri piksel yang berubah, kanan piksel yang berubah dan berwarna lumpur"></div><div><p class="small" style="margin:.6em 0 0"><span class="key"><i style="background:#e39b3a"></i>warnanya berubah</span><span class="key"><i style="background:#c0392b"></i>berubah dan berwarna lumpur</span><span class="key"><i style="background:#f2d3a2"></i>berubah, bukan lumpur</span></p>
+        <p class="small">Dari 100 piksel, 40 piksel berubah warna (kiri), tetapi hanya 30 yang warnanya seperti lumpur (kanan).</p>
+        <p class="rumus">30 ÷ 100 × 100 = <b>30</b> → 30% petak tertutup material asing</p></div></div>
+      </div>
+    </article>
+
+    <article class="hitung rv">
+      <div>
+        <h3><span class="no">3</span>Tanaman yang hilang</h3>
+        <p class="small muted">Piksel dianggap bertanaman bila warnanya cukup hijau dibanding merah dan birunya. Yang dihitung adalah berapa bagian tanaman lama yang hilang.</p>
+        <figure class="contoh"><picture><source srcset="assets/img/layer/contoh3.webp" type="image/webp"><img src="assets/img/layer/contoh3.jpg" alt="Contoh tanda 3: tanaman yang hilang (merah)" loading="lazy" data-zoom="assets/img/layer/contoh3.jpg"></picture><figcaption>Kiri: sebelum bencana · tengah: sesudah bencana · kanan: hasil perhitungan, merah = tanaman hijau yang hilang setelah bencana.</figcaption></figure>
+        <div class="duo"><div class="grid-img"><img src="assets/img/layer/hitung3.png" alt="Ilustrasi kotak: kiri tanaman sebelum bencana, kanan tanaman sesudah bencana"></div><div><p class="small" style="margin:.6em 0 0"><span class="key"><i style="background:#3a8a3f"></i>bertanaman</span><span class="key"><i style="background:#c0392b"></i>tanaman hilang</span></p>
+        <p class="small">Sebelum bencana ada 60 piksel bertanaman. Sesudah bencana tinggal 15, jadi 45 piksel tanamannya hilang.</p>
+        <p class="rumus">(60 − 15) ÷ 60 × 100 = <b>75</b> → 75% tanaman hilang</p></div></div>
+      </div>
+    </article>
+
+    <article class="hitung rv">
+      <div>
+        <h3><span class="no">4</span>Perubahan warna dan kecerahan</h3>
+        <p class="small muted">Tanda ini menangkap perubahan apa pun yang cukup besar, termasuk bentuk kerusakan yang tidak tertangkap tanda lain. Batas "cukup besar" dihitung otomatis untuk setiap lokasi foto (metode Otsu).</p>
+        <figure class="contoh"><picture><source srcset="assets/img/layer/contoh4.webp" type="image/webp"><img src="assets/img/layer/contoh4.jpg" alt="Contoh tanda 4: perubahan warna dan kecerahan (merah)" loading="lazy" data-zoom="assets/img/layer/contoh4.jpg"></picture><figcaption>Kiri: sebelum bencana · tengah: sesudah bencana · kanan: hasil perhitungan, merah = bagian yang warna dan kecerahannya berubah besar.</figcaption></figure>
+        <div class="duo"><div class="grid-img"><img src="assets/img/layer/hitung4.png" alt="Ilustrasi kotak: piksel yang berubah besar"></div><div><p class="small" style="margin:.6em 0 0"><span class="key"><i style="background:#c0392b"></i>berubah melewati batas</span></p>
+        <p class="small">Dari 100 piksel, 45 piksel berubah melewati batas.</p>
+        <p class="rumus">45 ÷ 100 × 100 = <b>45</b> → 45% petak berubah</p></div></div>
+      </div>
+    </article>
+
+    <article class="hitung rv">
+      <div>
+        <h3><span class="no">5</span>Genangan air baru</h3>
+        <p class="small muted">Piksel dianggap air bila warnanya lebih biru daripada merah. Air yang sudah ada sebelum bencana, misalnya sawah yang memang sedang diairi, tidak ikut dihitung.</p>
+        <figure class="contoh"><picture><source srcset="assets/img/layer/contoh5.webp" type="image/webp"><img src="assets/img/layer/contoh5.jpg" alt="Contoh tanda 5: genangan baru (merah)" loading="lazy" data-zoom="assets/img/layer/contoh5.jpg"></picture><figcaption>Kiri: sebelum bencana · tengah: sesudah bencana · kanan: hasil perhitungan, merah = genangan air yang baru muncul setelah bencana.</figcaption></figure>
+        <div class="duo"><div class="grid-img"><img src="assets/img/layer/hitung5.png" alt="Ilustrasi kotak: kiri air sebelum bencana, kanan air sesudah bencana"></div><div><p class="small" style="margin:.6em 0 0"><span class="key"><i style="background:#3b78b8"></i>air sejak sebelum bencana</span><span class="key"><i style="background:#c0392b"></i>genangan baru</span></p>
+        <p class="small">Sebelum bencana ada 10 piksel air. Sesudah bencana ada 25 piksel air, jadi genangan barunya 15 piksel.</p>
+        <p class="rumus">(25 − 10) ÷ 100 × 100 = <b>15</b> → 15% petak tergenang air baru</p></div></div>
+      </div>
+    </article>
+
+    <article class="hitung rv">
+      <div>
+        <h3><span class="no">6</span>Perubahan menurut model AI</h3>
+        <p class="small muted">Model AI siap pakai bernama AnyChange membandingkan kedua foto dan menandai bagian yang berubah. Angka di setiap kotak menunjukkan berapa kali piksel itu ditandai berubah.</p>
+        <figure class="contoh"><picture><source srcset="assets/img/layer/contoh6.webp" type="image/webp"><img src="assets/img/layer/contoh6.jpg" alt="Contoh tanda 6: perubahan menurut AI (merah)" loading="lazy" data-zoom="assets/img/layer/contoh6.jpg"></picture><figcaption>Kiri: sebelum bencana · tengah: sesudah bencana · kanan: hasil perhitungan, merah = bagian yang dinilai berubah oleh model AI AnyChange.</figcaption></figure>
+        <div class="duo"><div class="grid-img"><img src="assets/img/layer/hitung6.png" alt="Ilustrasi kotak dengan jumlah tanda perubahan per piksel"></div><div><p class="small" style="margin:.6em 0 0"><span class="key"><i style="background:#c0392b"></i>ditandai minimal 2 kali</span><span class="key"><i style="background:#c9b99a"></i>hanya 1 kali (diabaikan)</span></p>
+        <p class="small">Agar tidak terkecoh gangguan kecil, piksel baru dihitung bila ditandai minimal 2 kali. Ada 20 piksel seperti itu.</p>
+        <p class="rumus">20 ÷ 100 × 100 = <b>20</b> → 20% petak berubah</p></div></div>
+      </div>
+    </article>
+  </div>
+</section>
+
+<section>
+  <div class="wrap grid g2" style="gap:56px;align-items:start">
+    <div class="rv">
+      <h2>Dari enam angka menjadi tingkat kerusakan</h2>
+      <p class="muted">Keenam angka di atas lalu diberikan kepada Random Forest. Random Forest terdiri atas 300 "pohon keputusan" yang masing-masing memberi suara, dan tingkat kerusakan dengan suara terbanyak menjadi keputusan akhir. Pohon-pohon itu belajar dari 2.176 petak contoh yang sudah diberi label.</p>
+      <div class="callout small"><b>Contoh nyata satu petak</b> di lokasi uji:<br>pematang hilang 72,75 · lumpur 30,52 · tanaman hilang 99,02 · perubahan warna 61,95 · genangan baru 0,00 · perubahan menurut AI 7,04<br>→ petak ini memang berlabel <b>Terdampak Berat</b>.</div>
+    </div>
+    <div class="rv">
+      <h2>Bagaimana hasilnya dinilai?</h2>
+      <div class="table-wrap"><table class="data">
+        <thead><tr><th>Ukuran</th><th>Artinya</th></tr></thead>
+        <tbody>
+          <tr><td><em>Precision</em></td><td class="l">Dari semua petak yang ditandai model, berapa bagian yang benar.</td></tr>
+          <tr><td><em>Recall</em></td><td class="l">Dari semua petak yang sebenarnya ada, berapa bagian yang berhasil ditemukan.</td></tr>
+          <tr><td>F1</td><td class="l">Gabungan <em>precision</em> dan <em>recall</em> dalam satu angka 0 sampai 1. Makin mendekati 1, makin baik.</td></tr>
+          <tr><td>Kappa</td><td class="l">Seberapa sesuai penilaian model dengan penilaian manusia, dengan hukuman lebih besar untuk kesalahan yang jauh (misalnya rusak berat dinilai tidak terdampak).</td></tr>
+          <tr><td>Skor xView2</td><td class="l">Skor gabungan baku untuk penilaian kerusakan dari foto satelit: 30% dari kemampuan menemukan objek, 70% dari ketepatan menilai kerusakan.</td></tr>
+        </tbody></table></div>
+      <p class="muted small" style="margin-top:12px">Semua ukuran dihitung pada 4 lokasi uji yang tidak dipakai saat model belajar, sehingga mencerminkan kinerja di lokasi baru.</p>
     </div>
   </div>
 </section>
 
 <section class="alt" id="lokasi">
   <div class="wrap">
-    <div class="head rv"><h2>Lokasi 18 tile terpilih</h2>
-      <p class="muted">Tujuh tile berada di Kota Palu (Kelurahan Talise dan Petobo) dan sebelas di Kabupaten Sigi (Kecamatan Dolo dan Sigi Biromaru). Empat tile uji adalah 00000163, 00000169, 00000184, dan 00000195.</p></div>
-    <div class="rv table-wrap"><table class="data">
-      <caption>Lokasi administratif setiap tile</caption>
-      <thead><tr><th>Tile</th><th>Peran</th><th>Desa/Kelurahan</th><th>Kecamatan</th><th>Kabupaten/Kota</th><th>Segmen</th></tr></thead>
+    <details class="card rv">
+      <summary><b>Lihat lokasi 18 foto satelit yang dipakai</b></summary>
+      <p class="muted small" style="margin-top:12px">Tujuh lokasi berada di Kota Palu (Kelurahan Talise dan Petobo) dan sebelas di Kabupaten Sigi (Kecamatan Dolo dan Sigi Biromaru). Empat lokasi uji: 00000163, 00000169, 00000184, dan 00000195.</p>
+      <div class="table-wrap"><table class="data">
+      <caption>Lokasi administratif setiap foto (tile)</caption>
+      <thead><tr><th>Tile</th><th>Peran</th><th>Desa/Kelurahan</th><th>Kecamatan</th><th>Kabupaten/Kota</th><th>Petak</th></tr></thead>
       <tbody>
           <tr><td class="mono">00000065</td><td>Latih</td><td class="l">Talise</td><td class="l">Mantikulore</td><td class="l">Kota Palu</td><td>433</td></tr>
           <tr><td class="mono">00000117</td><td>Latih</td><td class="l">Talise</td><td class="l">Mantikulore</td><td class="l">Kota Palu</td><td>511</td></tr>
@@ -99,28 +186,8 @@
           <tr><td class="mono">00000194</td><td>Latih</td><td class="l">Langaleso</td><td class="l">Dolo</td><td class="l">Sigi</td><td>201</td></tr>
           <tr><td class="mono">00000195</td><td>Uji</td><td class="l">Pombewe</td><td class="l">Sigi Biromaru</td><td class="l">Sigi</td><td>93</td></tr>
       </tbody></table></div>
-    <p class="muted small rv" style="margin-top:12px">Lokasi diperoleh dari irisan batas tile dengan peta batas desa/kelurahan (pembaruan 13 Juni 2023). Desa/kelurahan yang mencakup kurang dari 10% luas tile tidak dicantumkan; persentase menunjukkan porsi luas tile. Sekitar 34% luas tile 00000065 berupa perairan Teluk Palu. Segmen = jumlah petak <em>ground truth</em> (total 3.271).</p>
-  </div>
-</section>
-
-<section>
-  <div class="wrap grid g2" style="gap:56px;align-items:start">
-    <div class="rv">
-      <h2>Tile utuh sebagai blok spasial</h2>
-      <p class="muted">Empat tile disisihkan utuh sebagai data uji, sehingga model selalu dinilai pada lokasi yang tidak pernah dilihatnya. Empat belas tile sisanya dibagi ke 4 <em>fold</em> dengan algoritme Longest Processing Time agar jumlah segmen per <em>fold</em> seimbang.</p>
-      <div class="callout small">Pilihan ini membuat komposisi kelas dan ukuran petak di data uji berbeda dari data latih (<em>label shift</em> dan pergeseran kovariat pada peubah ukuran objek). Angka kinerja menjadi pendugaan yang jujur untuk lokasi baru, bukan angka optimistis dari pembagian acak.</div>
-    </div>
-    <div class="rv">
-      <h2>Metrik untuk tiap tahap</h2>
-      <div class="table-wrap"><table class="data">
-        <thead><tr><th>Tahap</th><th>Metrik utama</th></tr></thead>
-        <tbody>
-          <tr><td>Tujuan 1: segmentasi</td><td class="l"><em>Precision</em>, <em>recall</em>, F1, dan IoU tingkat piksel dan segmen (pencocokan Hungarian, IoU ≥ 0,5)</td></tr>
-          <tr><td>Tujuan 2: klasifikasi</td><td class="l">F1-<em>macro</em> dan Cohen's Kappa tertimbang kuadratik</td></tr>
-          <tr><td>Tujuan 3: model Mask R-CNN–RF</td><td class="l">F1_segmentasi, F1 Mask R-CNN–RF, Skor gabungan xView2, dan mIoU</td></tr>
-          <tr><td>Aplikasi web</td><td class="l">Kesetaraan segmen, fitur, dan kelas terhadap hasil resmi</td></tr>
-        </tbody></table></div>
-    </div>
+      <p class="muted small" style="margin-top:12px">Sumber batas desa/kelurahan: Alf-Anas (2023). Persentase menunjukkan porsi luas foto; desa yang mencakup kurang dari 10% tidak dicantumkan.</p>
+    </details>
   </div>
 </section>
 </main>

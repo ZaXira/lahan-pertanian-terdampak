@@ -17,7 +17,7 @@
 
   /* ---------- navigasi ---------- */
   const MENU = [
-    ["index.html", "Beranda", "beranda"], ["metode.html", "Metode", "metode"], ["hasil.html", "Hasil", "hasil"],
+    ["index.html", "Beranda", "beranda"], ["metode.html", "Alur & Perhitungan", "metode"], ["hasil.html", "Hasil", "hasil"],
     ["demo.html", "Demo Galeri", "demo"], ["unggah.html", "Coba Citra Sendiri", "unggah"]
   ];
   const nav = document.createElement("header");
@@ -54,17 +54,18 @@
   const ft = document.createElement("footer");
   ft.innerHTML = `<div class="wrap"><div class="cols">
       <div><div class="id"><img class="logo-inv" src="assets/img/logo-stis.png" alt="">
-        <div><h4>${C.judul}</h4><p class="small" style="margin:0">Studi kasus Tsunami Palu 2018. Skripsi ${C.prodi}, ${C.kampus}, ${C.tahun}.</p></div></div></div>
-      <div><h4>Penulis</h4><ul class="small"><li>${C.penulis}</li><li>NIM ${C.nim}</li>
-        <li style="margin-top:6px">Pembimbing:<br>${C.pembimbing}</li></ul></div>
+        <div><h4>Skripsi</h4><p class="small" style="margin:0">${C.judulLengkap}</p>
+        <p class="small" style="margin:.6em 0 0">${C.prodi}, ${C.kampus}.</p></div></div></div>
+      <div><h4>Identitas penulis</h4><ul class="small"><li>${C.penulis}</li><li>NIM ${C.nim}</li><li>Tahun lulus ${C.tahunLulus}</li>
+        <li style="margin-top:6px">Dosen pembimbing:<br>${C.pembimbing}</li></ul></div>
       <div><h4>Tautan</h4><ul class="small">
         <li><a href="${C.spaceUrl}" target="_blank" rel="noopener">Aplikasi di Hugging Face Spaces</a></li>
         <li><a href="${C.datasetUrl}" target="_blank" rel="noopener">Contoh citra GeoTIFF (dataset)</a></li>
         <li><a href="${C.githubUrl}" target="_blank" rel="noopener">Kode sumber di GitHub</a></li>
         <li><a href="https://xview2.org" target="_blank" rel="noopener">Sumber citra: xBD / xView2</a></li></ul></div>
     </div>
-    <div class="fine">Citra: xBD (Gupta dkk., 2019), lisensi CC BY-NC-SA 4.0. Angka pada situs ini diambil langsung dari keluaran resmi penelitian.
-      Hasil model bersifat indikatif dan perlu verifikasi lapangan sebelum dipakai sebagai dasar keputusan.</div></div>`;
+    <div class="fine">Citra: xBD (Gupta dkk., 2019), lisensi CC BY-NC-SA 4.0. Angka pada situs ini diambil dari hasil resmi skripsi (versi revisi setelah sidang).
+      Hasil model bersifat perkiraan awal dan perlu dicek di lapangan sebelum dipakai sebagai dasar keputusan.</div></div>`;
   document.body.append(ft);
 
   /* ---------- reveal ---------- */

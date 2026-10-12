@@ -174,12 +174,15 @@ paling kecil; **login ke Hugging Face** agar pemrosesan memakai kuota akun Anda 
 
 TENTANG = f"""
 ### Tentang aplikasi
-Artefak skripsi **"{JUDUL} Menggunakan Citra Satelit Resolusi Sangat Tinggi dengan Metode Deep Learning dan
-Machine Learning: Studi Kasus Tsunami Palu 2018"**.
+Artefak skripsi **"PENILAIAN KERUSAKAN LAHAN PERTANIAN TERDAMPAK BENCANA MENGGUNAKAN CITRA SATELIT RESOLUSI SANGAT
+TINGGI DENGAN METODE DEEP LEARNING DAN MACHINE LEARNING (Studi Kasus: Bencana Palu Tahun 2018)"**.
+Aplikasi ini menjalankan **model PKLPTB** (model penilaian kerusakan lahan pertanian terdampak bencana).
 
-- **Penulis:** Rafliansyah Dwi Setiawan Tondau (NIM 222212827)
-- **Pembimbing:** Dr. Eng. Arie Wahyu Wijayanto, S.S.T., M.T.
-- **Program studi:** D-IV Komputasi Statistik, peminatan Sains Data, Politeknik Statistika STIS, 2026
+- **Nama:** Rafliansyah Dwi Setiawan Tondau
+- **NIM:** 222212827
+- **Tahun lulus:** 2026
+- **Dosen pembimbing:** Dr. Eng. Arie W. Wijayanto, S.S.T., M.T.
+- **Program studi:** D-IV Komputasi Statistik, peminatan Sains Data, Politeknik Statistika STIS
 
 | Tahap | Metode | Masukan |
 |---|---|---|

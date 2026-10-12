@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#2f5d27">
-<title>Lahan Terdampak | Penilaian Kerusakan Lahan Pertanian Tsunami Palu 2018</title>
-<meta name="description" content="Penilaian kerusakan lahan pertanian terdampak bencana dari citra satelit resolusi sangat tinggi dengan Mask R-CNN dan Random Forest. Studi kasus Tsunami Palu 2018.">
+<title>Lahan Terdampak | Penilaian Kerusakan Lahan Pertanian Bencana Palu 2018</title>
+<meta name="description" content="Skripsi Rafliansyah Dwi Setiawan Tondau (NIM 222212827): menilai kerusakan setiap petak lahan pertanian dari citra satelit sebelum dan sesudah bencana Palu 2018.">
 <meta property="og:title" content="Penilaian Kerusakan Lahan Pertanian Terdampak Bencana">
-<meta property="og:description" content="Deep learning dan machine learning untuk menilai kerusakan setiap petak lahan pertanian dari citra satelit sebelum dan sesudah bencana.">
+<meta property="og:description" content="Komputer belajar menemukan petak sawah dan menilai tingkat kerusakannya dari foto satelit sebelum dan sesudah bencana.">
 <meta property="og:image" content="https://lahan-terdampak-palu.vercel.app/assets/img/tile_00000184_overlay_crop.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="assets/img/logo-stis.png">
@@ -23,28 +23,28 @@
 <section class="hero">
   <div class="wrap">
     <div class="rv">
-      <div class="eyebrow">Skripsi Sains Data, Politeknik Statistika STIS</div>
-      <h1>Menilai kerusakan <em>setiap petak</em> lahan pertanian dari citra satelit</h1>
-      <p class="lead">Mask R-CNN membentuk segmen petak, Random Forest menilai kerusakannya. Studi kasus gempa, tsunami, dan likuifaksi Palu 2018.</p>
+      <div class="eyebrow">Skripsi Sains Data, Politeknik Statistika STIS, 2026</div>
+      <h1>Menilai kerusakan <em>setiap petak</em> sawah dari foto satelit</h1>
+      <p class="lead">Komputer belajar menemukan petak lahan pertanian, lalu menilai seberapa parah kerusakannya dengan membandingkan foto satelit sebelum dan sesudah bencana Palu 2018.</p>
       <div class="btn-row">
-        <a class="btn" href="demo.html">Lihat demo galeri <i class="ph ph-arrow-right" aria-hidden="true"></i></a>
-        <a class="btn ghost" href="unggah.html">Coba citra sendiri</a>
+        <a class="btn" href="metode.html">Lihat alur &amp; perhitungannya <i class="ph ph-arrow-right" aria-hidden="true"></i></a>
+        <a class="btn ghost" href="demo.html">Coba demo</a>
       </div>
     </div>
     <div class="rv">
-      <div class="seg" id="heroSeg" role="group" aria-label="Pilih lapisan kanan">
+      <div class="seg" id="heroSeg" role="group" aria-label="Pilih gambar kanan">
         <button aria-pressed="false" data-r="post">Sesudah bencana</button>
         <button aria-pressed="true" data-r="overlay_crop">Hasil penilaian</button>
       </div>
       <div class="compare" id="heroCmp" style="margin-top:12px">
-        <picture><source srcset="assets/img/tile_00000184_overlay_crop.webp" type="image/webp"><img id="heroR" src="assets/img/tile_00000184_overlay_crop.jpg" alt="Hasil penilaian kerusakan tile 00000184" width="1024" height="1018"></picture>
-        <picture><source srcset="assets/img/tile_00000184_pre.webp" type="image/webp"><img class="top" src="assets/img/tile_00000184_pre.jpg" alt="Citra sebelum bencana tile 00000184" width="1024" height="1018"></picture>
+        <picture><source srcset="assets/img/tile_00000184_overlay_crop.webp" type="image/webp"><img id="heroR" src="assets/img/tile_00000184_overlay_crop.jpg" alt="Hasil penilaian kerusakan di salah satu lokasi uji" width="1024" height="1018"></picture>
+        <picture><source srcset="assets/img/tile_00000184_pre.webp" type="image/webp"><img class="top" src="assets/img/tile_00000184_pre.jpg" alt="Foto satelit sebelum bencana" width="1024" height="1018"></picture>
         <div class="handle"></div>
         <span class="tag l">Sebelum</span><span class="tag r" id="heroTag">Hasil</span>
         <input type="range" min="0" max="100" value="50" aria-label="Geser pembanding">
       </div>
       <div class="legend"><span><i class="dot none"></i>Tidak Terdampak</span><span><i class="dot mid"></i>Terdampak Sedang</span><span><i class="dot sev"></i>Terdampak Berat</span></div>
-      <div class="compare-cap"><span>Tile uji 00000184, ±26 ha, resolusi 0,4984 m/piksel</span></div>
+      <div class="compare-cap"><span>Geser garis putih untuk membandingkan. Satu kotak foto mencakup ±26 hektare di Kabupaten Sigi.</span></div>
     </div>
   </div>
 </section>
@@ -52,19 +52,19 @@
 <section class="alt" id="masalah">
   <div class="wrap">
     <div class="head rv">
-      <h2>Lahan pertanian ikut menjadi korban, dan bagian dari bencana itu sendiri</h2>
-      <p class="muted">Di Lembah Palu, irigasi padi sawah menaikkan muka air tanah sehingga guncangan gempa memicu aliran tanah berskala besar. Survei lapangan lambat, dan pemanfaatan citra satelit selama ini berfokus pada bangunan.</p>
+      <h2>Mengapa penelitian ini dibuat?</h2>
+      <p class="muted">Setelah bencana, pemerintah perlu tahu sawah mana yang rusak dan seberapa parah. Selama ini datanya dikumpulkan lewat survei lapangan yang lama dan sulit karena jalan sering terputus. Foto satelit bisa melihat wilayah luas sekaligus, tetapi pemanfaatannya selama ini lebih banyak untuk menilai kerusakan bangunan, bukan sawah.</p>
     </div>
     <div class="facts">
       <div class="main rv">
         <div class="num">6.467 ha</div>
-        <p>sawah terdampak di Palu dan Sigi, dipetakan melalui interpretasi visual dan survei lapangan.</p>
+        <p>sawah rusak di Palu dan Sigi akibat gempa, tsunami, dan likuifaksi 28 September 2018.</p>
         <div class="src">Nanda &amp; Mulyani (2021)</div>
       </div>
       <div class="side">
-        <div class="rv"><div class="num">4.000+</div><p>korban jiwa gempa, tsunami, dan likuifaksi 28 September 2018<span class="src" style="display:block">Cilia dkk. (2021)</span></p></div>
-        <div class="rv"><div class="num">23%</div><p>rata-rata porsi sektor pertanian dalam total dampak bencana lintas sektor (PDNA 2007-2022)<span class="src" style="display:block">FAO (2023)</span></p></div>
-        <div class="rv"><div class="num">1°</div><p>kemiringan lereng yang sudah cukup memicu aliran tanah pada lahan beririgasi<span class="src" style="display:block">Bradley dkk. (2019)</span></p></div>
+        <div class="rv"><div class="num">4.000+</div><p>korban jiwa dalam bencana yang sama<span class="src" style="display:block">Cilia dkk. (2021)</span></p></div>
+        <div class="rv"><div class="num">23%</div><p>kerusakan dan kerugian akibat bencana ditanggung sektor pertanian, padahal sumbangannya pada ekonomi dunia hanya 4,1%<span class="src" style="display:block">FAO (2025)</span></p></div>
+        <div class="rv"><div class="num">Per petak</div><p>informasi yang dibutuhkan: bukan hanya luas total, tetapi petak mana yang rusak dan seberapa parah</p></div>
       </div>
     </div>
   </div>
@@ -73,42 +73,49 @@
 <section id="data">
   <div class="wrap grid g2" style="align-items:center;gap:56px">
     <div class="rv">
-      <h2>18 pasang citra, 3.271 petak berlabel</h2>
-      <p class="muted">Citra resolusi sangat tinggi sebelum dan sesudah bencana diambil dari subset palu-tsunami <em>dataset</em> xBD. Setiap petak sawah, ladang, dan tegalan didigitasi manual, lalu dinilai dari proporsi luasnya yang menunjukkan indikasi kerusakan.</p>
+      <h2>18 pasang foto satelit, 3.271 petak yang dinilai</h2>
+      <p class="muted">Foto satelit yang sangat tajam (satu titik foto ≈ 50 cm di lapangan) diambil dari kumpulan data terbuka xBD. Peneliti menggambar batas setiap petak sawah, ladang, dan tegalan, lalu menilai berapa bagian petak yang menunjukkan tanda kerusakan, seperti tertimbun lumpur, retak, atau pematangnya hilang.</p>
       <div class="notes">
-        <div><h3>Terdampak berarti ada indikasi</h3><p class="small muted">Tidak Terdampak bila tidak ada indikasi sama sekali; Terdampak Berat bila indikasi mencakup lebih dari separuh luas petak.</p></div>
-        <div><h3>4 tile uji</h3><p class="small muted">Semua evaluasi memakai 4 tile yang tidak pernah dilihat model saat pelatihan: 604 petak.</p></div>
+        <div><h3>Tiga tingkat kerusakan</h3><p class="small muted">Tidak Terdampak (tidak ada tanda rusak), Terdampak Sedang (rusak sampai separuh petak), dan Terdampak Berat (rusak lebih dari separuh petak).</p></div>
+        <div><h3>Diuji di lokasi baru</h3><p class="small muted">Hasil diuji pada 4 lokasi (604 petak) yang tidak pernah dilihat komputer saat belajar, supaya hasilnya jujur.</p></div>
       </div>
     </div>
-    <div class="card rv"><h3 style="margin-bottom:12px">Distribusi kelas kerusakan</h3><div class="chart-box" style="height:340px"><canvas id="cDist" role="img" aria-label="Distribusi kelas kerusakan pada 3.271 petak"></canvas></div></div>
+    <div class="card rv"><h3 style="margin-bottom:12px">Jumlah petak per tingkat kerusakan</h3><div class="chart-box" style="height:340px"><canvas id="cDist" role="img" aria-label="Jumlah petak per tingkat kerusakan pada 3.271 petak"></canvas></div></div>
   </div>
 </section>
 
 <section class="alt" id="alur">
   <div class="wrap">
     <div class="head rv">
-      <h2>Dari sepasang citra menjadi peta kerusakan per petak</h2>
-      <p class="muted">Satu model Mask R-CNN–RF yang berjalan tanpa <em>ground truth</em>, sehingga dapat dipakai pada citra baru.</p>
+      <h2>Cara kerjanya dalam tiga langkah</h2>
+      <p class="muted">Gabungan ketiga langkah ini disebut <b>model PKLPTB</b> (model penilaian kerusakan lahan pertanian terdampak bencana).</p>
     </div>
     <div class="flow">
-      <div class="step rv"><div class="ic"><i class="ph ph-polygon" aria-hidden="true"></i></div><div class="who">Tujuan 1, deep learning</div><h3>Segmentasi petak</h3><p>Mask R-CNN mendeteksi setiap petak lahan pada citra sebelum bencana.</p></div>
-      <div class="step rv"><div class="ic"><i class="ph ph-stack" aria-hidden="true"></i></div><div class="who">Rekayasa fitur</div><h3>Ukur enam jenis perubahan</h3><p>Batas lahan, material asing, tanaman, radiometri, genangan, dan perubahan semantik (SAC).</p></div>
-      <div class="step rv"><div class="ic"><i class="ph ph-tree-structure" aria-hidden="true"></i></div><div class="who">Tujuan 2, machine learning</div><h3>Klasifikasi kerusakan</h3><p>Random Forest menilai setiap petak ke dalam tiga kelas kerusakan.</p></div>
-      <div class="step rv"><div class="ic"><i class="ph ph-map-trifold" aria-hidden="true"></i></div><div class="who">Tujuan 3 dan <em>deployment</em></div><h3>Luas per kelas</h3><p>Luas lahan per tingkat kerusakan dihitung dan ditampilkan dalam aplikasi web.</p></div>
+      <div class="step rv"><div class="ic"><i class="ph ph-polygon" aria-hidden="true"></i></div><div class="who">Langkah 1</div><h3>Temukan petak sawah</h3><p>Komputer (Mask R-CNN) menggambar batas setiap petak pada foto sebelum bencana.</p></div>
+      <div class="step rv"><div class="ic"><i class="ph ph-stack" aria-hidden="true"></i></div><div class="who">Langkah 2</div><h3>Ukur enam tanda perubahan</h3><p>Pada setiap petak dihitung berapa persen pematang hilang, tertutup lumpur, tanaman hilang, dan seterusnya.</p></div>
+      <div class="step rv"><div class="ic"><i class="ph ph-tree-structure" aria-hidden="true"></i></div><div class="who">Langkah 3</div><h3>Tentukan tingkat kerusakan</h3><p>Komputer (Random Forest) memakai keenam angka itu untuk memutuskan tingkat kerusakan petak.</p></div>
+      <div class="step rv"><div class="ic"><i class="ph ph-map-trifold" aria-hidden="true"></i></div><div class="who">Hasil akhir</div><h3>Peta dan luas</h3><p>Petak diwarnai sesuai kerusakannya dan luas tiap tingkat dihitung otomatis di aplikasi web.</p></div>
     </div>
-    <p style="margin-top:36px" class="rv"><a class="link" href="metode.html">Baca metode lengkap <i class="ph ph-arrow-right" aria-hidden="true"></i></a></p>
+    <p style="margin-top:36px" class="rv"><a class="link" href="metode.html">Lihat alur penelitian lengkap dan contoh perhitungannya <i class="ph ph-arrow-right" aria-hidden="true"></i></a></p>
   </div>
 </section>
 
 <section id="hasil">
   <div class="wrap">
     <div class="head rv">
-      <h2>Andal untuk lahan rusak berat, dengan catatan yang jelas</h2>
-      <p class="muted">Evaluasi pada 4 tile uji. Rincian lengkap, termasuk keterbatasannya, ada di halaman Hasil.</p>
+      <h2>Hasilnya: andal untuk lahan yang rusak berat</h2>
+      <p class="muted">Semua angka di bawah diukur pada 4 lokasi uji (604 petak).</p>
     </div>
     <div class="bento rv" id="ringkas"></div>
-    <div class="callout rv" style="margin-top:28px"><b>Cara membaca hasil:</b> model paling andal sebagai penunjuk lokasi lahan Terdampak Berat dan belum andal membedakan lahan yang rusak sebagian dari lahan utuh. Keluarannya tepat dipakai sebagai penapisan awal sebelum verifikasi lapangan.</div>
+    <div class="callout rv" style="margin-top:28px"><b>Artinya:</b> model ini paling tepat dipakai untuk <b>menunjuk lokasi lahan yang rusak berat</b> sebagai prioritas pengecekan di lapangan. Model ini belum bisa diandalkan untuk membedakan lahan yang rusak sebagian dari lahan yang utuh.</div>
     <p style="margin-top:28px" class="rv"><a class="btn" href="hasil.html">Lihat hasil lengkap</a></p>
+  </div>
+</section>
+
+<section class="alt" id="identitas">
+  <div class="wrap">
+    <div class="head rv"><h2>Tentang skripsi ini</h2></div>
+    <dl class="idcard rv" id="idcard"></dl>
   </div>
 </section>
 </main>
@@ -119,8 +126,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script>
 (function () {
-  const D = window.DATA;
-  /* hero: ganti lapisan kanan */
+  const D = window.DATA, C = window.CONFIG;
+  /* hero: ganti gambar kanan */
   const seg = document.getElementById("heroSeg"), img = document.getElementById("heroR"), tag = document.getElementById("heroTag");
   seg.addEventListener("click", (e) => {
     const b = e.target.closest("button"); if (!b) return;
@@ -130,17 +137,24 @@
     tag.textContent = b.dataset.r === "post" ? "Sesudah" : "Hasil";
   });
 
-  /* ringkasan hasil: angka dari data resmi */
-  const t2 = D.t2, t3 = D.t3, i = (arr, lbl) => arr[t2.label.indexOf(lbl)];
+  /* ringkasan hasil dalam bahasa sederhana (angka dari data resmi) */
+  const t3 = D.t3, d = t3.deteksi, persen = (a, b) => (100 * a / b).toLocaleString("id-ID", { maximumFractionDigits: 1 });
   document.getElementById("ringkas").innerHTML = `
-    <div class="big"><picture><source srcset="assets/img/tile_00000195_overlay_crop.webp" type="image/webp"><img src="assets/img/tile_00000195_overlay_crop.jpg" alt="Hasil model Mask R-CNN–RF pada tile 00000195" loading="lazy"></picture>
-      <div class="in-txt"><div class="who">Model Mask R-CNN–RF</div><div class="num">${fmt(t3.deteksi.f1_lokalisasi)}</div>
-      <p class="lbl">F1_segmentasi pada 604 petak uji; Skor gabungan xView2 ${fmt(t3.xview2)}.</p></div></div>
-    <div><div class="who">Mask R-CNN</div><div class="num">${fmt(D.t1.mrcnn[2])}</div><p class="lbl">F1 tingkat segmen (YOLOv8-seg: ${fmt(D.t1.yolo[2])}).</p></div>
-    <div><div class="who">Random Forest</div><div class="num">${fmt(i(t2.rf, "Kappa kuadratik"))}</div><p class="lbl">Kappa tertimbang kuadratik klasifikasi kerusakan (LightGBM: ${fmt(i(t2.lgbm, "Kappa kuadratik"))}).</p></div>
-    <div class="wide"><div><div class="who">Aplikasi web</div><div class="num" style="margin:0">526/526</div></div><p class="lbl">segmen keluaran aplikasi identik dengan hasil resmi pada jalur GeoTIFF (FP32).</p></div>`;
+    <div class="big"><picture><source srcset="assets/img/tile_00000195_overlay_crop.webp" type="image/webp"><img src="assets/img/tile_00000195_overlay_crop.jpg" alt="Hasil model PKLPTB di salah satu lokasi uji" loading="lazy"></picture>
+      <div class="in-txt"><div class="who">Petak yang berhasil ditemukan</div><div class="num">${d.TP} dari ${d.TP + d.FN}</div>
+      <p class="lbl">petak di lokasi uji berhasil ditemukan model PKLPTB (${persen(d.TP, d.TP + d.FN)}%).</p></div></div>
+    <div><div class="who">Lahan rusak berat</div><div class="num">259 dari 268</div><p class="lbl">petak Terdampak Berat dikenali dengan benar oleh Random Forest (96,6%).</p></div>
+    <div><div class="who">Ketepatan penanda petak</div><div class="num">3 dari 4</div><p class="lbl">petak yang ditandai model memang petak lahan sungguhan (<em>precision</em> ${fmt(d.precision)}).</p></div>
+    <div class="wide"><div><div class="who">Aplikasi web</div><div class="num" style="margin:0">526/526</div></div><p class="lbl">petak hasil aplikasi sama persis dengan hasil penelitian, dan satu pasang foto selesai dinilai dalam ±22 detik.</p></div>`;
 
-  /* donat distribusi kelas */
+  /* identitas */
+  document.getElementById("idcard").innerHTML = [
+    ["Nama", C.penulis], ["NIM", C.nim], ["Tahun lulus", C.tahunLulus],
+    ["Judul skripsi", `<span class="judul">${C.judulLengkap}</span>`], ["Dosen pembimbing", C.pembimbing],
+    ["Program studi", `${C.prodi}, ${C.kampus}`]
+  ].map(([k, v]) => `<dt>${k}</dt><dd${k === "Judul skripsi" ? ' class="judul"' : ""}>${v}</dd>`).join("");
+
+  /* donat jumlah petak per kelas */
   let ch;
   const gambar = () => {
     const w = warna(), dist = D.distribusi, lab = ["Tidak Terdampak", "Terdampak Sedang", "Terdampak Berat"];
@@ -151,7 +165,7 @@
       data: { labels: lab, datasets: [{ data: nilai, backgroundColor: [w.none, w.mid, w.sev], borderColor: getComputedStyle(document.querySelector(".card")).backgroundColor, borderWidth: 3 }] },
       options: { maintainAspectRatio: false, cutout: "64%", animation: matchMedia("(prefers-reduced-motion: reduce)").matches ? false : undefined, plugins: {
         legend: { position: "bottom", labels: { color: w.ink, boxWidth: 12, padding: 16, font: { family: w.font } } },
-        tooltip: { callbacks: { label: (c) => ` ${c.label}: ${c.raw.toLocaleString("id-ID")} segmen` } } } }
+        tooltip: { callbacks: { label: (c) => ` ${c.label}: ${c.raw.toLocaleString("id-ID")} petak` } } } }
     });
   };
   gambar(); document.addEventListener("tema", gambar);

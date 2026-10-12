@@ -19,7 +19,7 @@
     <div class="rv">
       <div class="eyebrow">Demo galeri, tanpa GPU</div>
       <h1>Jelajahi empat tile uji Palu</h1>
-      <p class="lead">Pilih tile, bandingkan citra sebelum dan sesudah bencana, lalu jalankan penilaian. Hasilnya adalah keluaran aplikasi pada jalur GeoTIFF, identik dengan hasil resmi penelitian.</p>
+      <p class="lead">Pilih tile, bandingkan citra sebelum dan sesudah bencana, lalu jalankan penilaian. Hasil yang ditampilkan sama persis dengan hasil penelitian.</p>
     </div>
   </div>
 </section>
@@ -106,7 +106,7 @@
   $("jalan").addEventListener("click", () => {
     const g = G.find((x) => x.tile === pilih), r = g.resmi;
     $("jalan").disabled = true;
-    $("hasil").innerHTML = `<div class="status"><span class="pulse"></span><div>Mendeteksi petak, mengukur enam <em>layer</em> perubahan, dan mengklasifikasi…</div></div>
+    $("hasil").innerHTML = `<div class="status"><span class="pulse"></span><div>Menemukan petak, mengukur enam tanda perubahan, dan menilai kerusakan…</div></div>
       <div class="skel-rows" aria-hidden="true"><div class="skel row"></div><div class="skel row"></div><div class="skel row"></div><div class="skel row"></div></div>`;
     setTimeout(() => {
       kanan = "overlay_crop"; setSeg(); tampil(); $("jalan").disabled = false;
@@ -117,8 +117,8 @@
       $("hasil").innerHTML = `<div class="table-wrap"><table class="data"><caption>Hasil penilaian tile ${pilih}</caption>
           <thead><tr><th>Kelas kerusakan</th><th>Jumlah segmen</th><th>Luas (ha)</th></tr></thead><tbody>${baris}</tbody></table>
           <p class="tnote">Luas dihitung dari jumlah piksel × 0,4984² m². Sumber: keluaran aplikasi pada jalur GeoTIFF (FP32).</p></div>
-        <div class="callout small"><b>Dibandingkan dengan <em>ground truth</em> tile ini:</b>
-          ${r.TP} dari ${r.n_gt} petak terdeteksi (<em>recall</em> ${fmt(+r.recall_lokalisasi)}), ${r.FP} prediksi tanpa pasangan, F1_segmentasi ${fmt(+r.f1_lokalisasi)}, dan akurasi kelas pada pasangan terdeteksi ${fmt(+r.akurasi_klasifikasi_matched)}.</div>
+        <div class="callout small"><b>Dibandingkan dengan data acuan lokasi ini:</b>
+          ${r.TP} dari ${r.n_gt} petak berhasil ditemukan (${(100 * r.TP / r.n_gt).toLocaleString("id-ID", { maximumFractionDigits: 1 })}%), ${r.FP} tanda tidak cocok dengan petak acuan, dan ${(100 * r.akurasi_klasifikasi_matched).toLocaleString("id-ID", { maximumFractionDigits: 1 })}% petak yang ditemukan dinilai dengan tingkat kerusakan yang tepat.</div>
         <p class="small" style="margin:0"><a class="link" href="#" data-zoom="assets/img/tile_${pilih}_overlay.jpg"><i class="ph ph-magnifying-glass-plus" aria-hidden="true"></i>Lihat overlay beserta legenda</a></p>`;
     }, 1400);
   });

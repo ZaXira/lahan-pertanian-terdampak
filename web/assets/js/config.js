@@ -2,12 +2,14 @@
 window.CONFIG = {
   judul: "Penilaian Kerusakan Lahan Pertanian Terdampak Bencana",
   judulPendek: "Lahan Terdampak",
+  judulLengkap: "PENILAIAN KERUSAKAN LAHAN PERTANIAN TERDAMPAK BENCANA MENGGUNAKAN CITRA SATELIT RESOLUSI SANGAT TINGGI DENGAN METODE DEEP LEARNING DAN MACHINE LEARNING (Studi Kasus: Bencana Palu Tahun 2018)",
   penulis: "Rafliansyah Dwi Setiawan Tondau",
   nim: "222212827",
-  pembimbing: "Dr. Eng. Arie Wahyu Wijayanto, S.S.T., M.T.",
+  pembimbing: "Dr. Eng. Arie W. Wijayanto, S.S.T., M.T.",
   kampus: "Politeknik Statistika STIS",
   prodi: "D-IV Komputasi Statistik, peminatan Sains Data",
   tahun: 2026,
+  tahunLulus: 2026,
   // Hugging Face Space (backend demo unggah) dan dataset contoh citra
   spaceId: "ZaXira/lahan-pertanian-terdampak",
   spaceUrl: "https://huggingface.co/spaces/ZaXira/lahan-pertanian-terdampak",

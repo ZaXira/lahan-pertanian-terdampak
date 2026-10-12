@@ -14,15 +14,15 @@ short_description: Penilaian kerusakan lahan pertanian dari citra pre/post
 
 # Penilaian Kerusakan Lahan Pertanian Terdampak Bencana
 
-Artefak skripsi **"Penilaian Kerusakan Lahan Pertanian Terdampak Bencana Menggunakan Citra Satelit Resolusi
-Sangat Tinggi dengan Metode Deep Learning dan Machine Learning: Studi Kasus Tsunami Palu 2018"**
-— Rafliansyah Dwi Setiawan Tondau (NIM 222212827), Politeknik Statistika STIS, 2026.
-Pembimbing: Dr. Eng. Arie Wahyu Wijayanto, S.S.T., M.T.
+Artefak skripsi **"PENILAIAN KERUSAKAN LAHAN PERTANIAN TERDAMPAK BENCANA MENGGUNAKAN CITRA SATELIT RESOLUSI SANGAT
+TINGGI DENGAN METODE DEEP LEARNING DAN MACHINE LEARNING (Studi Kasus: Bencana Palu Tahun 2018)"**
+— Rafliansyah Dwi Setiawan Tondau (NIM 222212827), Politeknik Statistika STIS, lulus 2026.
+Dosen pembimbing: Dr. Eng. Arie W. Wijayanto, S.S.T., M.T.
 
 - Situs penelitian: https://lahan-terdampak-palu.vercel.app
 - Contoh citra GeoTIFF (4 tile uji): https://huggingface.co/datasets/ZaXira/palu-tsunami-lahan-pertanian
 
-Aplikasi ini menjalankan model Mask R-CNN–RF (Tujuan 3) secara interaktif dengan bobot final penelitian (tanpa pelatihan
+Aplikasi ini menjalankan model PKLPTB (model penilaian kerusakan lahan pertanian terdampak bencana, Tujuan 3) secara interaktif dengan bobot final penelitian (tanpa pelatihan
 ulang): Mask R-CNN mendeteksi petak lahan pada citra sebelum bencana, enam layer fitur mengukur perubahan
 sebelum–sesudah, lalu Random Forest menilai kerusakan ke dalam tiga kelas dan luas per kelas dihitung.
 
